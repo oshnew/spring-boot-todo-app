@@ -12,11 +12,131 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css"/>
+    <style>
+        html, body {
+            font-size: 14px;
+        }
+
+        a.badge.badge-secondary {
+            color: #FFFFFF;
+        }
+
+        a.badge.badge-danger {
+            color: #FFFFFF;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
     <h1>TODO APP</h1>
+    <div class="row mt-3">
+        <!--검색 영역-->
+    </div>
+    <div class="row mt-3">
+        <!--내용 영역-->
+        <div class="col-12">
+            <!--목록-->
+            <table class="table table-hover">
+                <colgroup>
+                    <col width="10%"/>
+                    <col width="*"/>
+                    <col width="15%"/>
+                    <col width="15%"/>
+                    <col width="20%"/>
+                </colgroup>
+                <thead class="">
+                <tr>
+                    <th>ID</th>
+                    <th>할일</th>
+                    <th>작성일시</th>
+                    <th>최종수정일시</th>
+                    <th>완료처리</th>
+                </tr>
+                </thead>
+                <tbody id="todo_table_body">
+                <tr>
+                    <td>4</td>
+                    <td>방청소
+                        <br>
+                        <a class="badge badge-pill badge-secondary mr-1" data-toggle="tooltip" data-html="true" data-placement="bottom" title=""
+                           data-original-title="청소">@3</a>
+                        <a class="badge badge-pill badge-danger mr-1" data-toggle="tooltip" data-html="true"
+                           data-placement="bottom" title="" data-original-title="집안일">@1</a>
+                    </td>
+                    <td>2018-10-25 00:00:00</td>
+                    <td>2018-10-25 00:00:00</td>
+                    <td>
+                        <select class="form-control form-control-sm">
+                            <option>미처리</option>
+                            <option>완료</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>청소
+                        <br>
+                        <a class="badge badge-pill badge-danger mr-1" data-toggle="tooltip" data-html="true"
+                           data-placement="bottom" title="" data-original-title="집안일">@1</a>
+                    </td>
+                    <td>2018-10-25 00:00:00</td>
+                    <td>2018-10-25 00:00:00</td>
+                    <td>
+                        <select class="form-control form-control-sm">
+                            <option>미처리</option>
+                            <option>완료</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>빨래
+                        <br>
+                        <a class="badge badge-pill badge-danger mr-1" data-toggle="tooltip" data-html="true"
+                            data-placement="bottom" title="" data-original-title="집안일">@1</a>
+                    </td>
+                    <td>2018-10-25 00:00:00</td>
+                    <td>2018-10-25 00:00:00</td>
+                    <td>
+                        <select class="form-control form-control-sm">
+                            <option>미처리</option>
+                            <option>완료</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>집안일<br></td>
+                    <td>2018-10-25 00:00:00</td>
+                    <td>2018-10-25 00:00:00</td>
+                    <td>
+                        <select class="form-control form-control-sm">
+                            <option>미처리</option>
+                            <option>완료</option>
+                        </select>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12">
+            <!--페이징-->
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                <li class="page-item"><a class="page-link" href="#">&lt;</a></li>
+
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item "><a class="page-link" href="#">2</a></li>
+                <li class="page-item "><a class="page-link" href="#">3</a></li>
+                <li class="page-item "><a class="page-link" href="#">4</a></li>
+                <li class="page-item "><a class="page-link" href="#">5</a></li>
+
+                <li class="page-item"><a class="page-link" href="#">&gt;</a></li>
+                <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
