@@ -1,6 +1,7 @@
 package kr.geun.t.app.todo.service;
 
 import kr.geun.t.app.common.response.ResData;
+import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.dto.TodoDTO;
 import kr.geun.t.app.todo.entity.TodoEntity;
 import kr.geun.t.app.todo.entity.TodoRefEntity;
@@ -47,7 +48,7 @@ public class TodoApiServiceAddTest {
      */
     @Before
     public void setUp() throws Exception {
-        preAddInfo = todoRepository.save(TodoEntity.builder().content("집안일").statusCd("NOT_YET").build());
+        preAddInfo = todoRepository.save(TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build());
 
     }
 
@@ -60,7 +61,7 @@ public class TodoApiServiceAddTest {
         //@formatter:off
 		TodoDTO.Add dbParam = TodoDTO.Add.builder()
 			.content("테스트")
-			.statusCd("NOT_YET")
+			.statusCd(TodoStatusCd.NOT_YET.name())
 			.build();
 		//@formatter:on
 
@@ -88,7 +89,7 @@ public class TodoApiServiceAddTest {
         //@formatter:off
 		TodoDTO.Add dbParam = TodoDTO.Add.builder()
 			.content("빨래")
-			.statusCd("NOT_YET")
+			.statusCd(TodoStatusCd.NOT_YET.name())
             .refTodos(new Long[]{preAddInfo.getTodoId()})
 			.build();
 		//@formatter:on

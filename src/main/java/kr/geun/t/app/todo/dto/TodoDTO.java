@@ -1,5 +1,6 @@
 package kr.geun.t.app.todo.dto;
 
+import kr.geun.t.app.todo.annotation.TodoStatusCdValid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class TodoDTO {
         @NotEmpty
         private String content;
 
+        @TodoStatusCdValid
         private String statusCd;
 
         private Long[] refTodos;
