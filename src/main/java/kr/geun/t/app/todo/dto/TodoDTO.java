@@ -47,4 +47,25 @@ public class TodoDTO {
         @Min(0)
         private Long todoId;
     }
+
+    /**
+     * 수정
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Modify {
+        @Min(0)
+        private Long todoId;
+
+        @Size(min = 2, max = 1024)
+        @NotEmpty
+        private String content;
+
+        @TodoStatusCdValid
+        private String statusCd;
+
+        private Long[] refTodos;
+    }
 }

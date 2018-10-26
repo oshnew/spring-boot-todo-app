@@ -87,4 +87,43 @@ public class TodoApiServiceImpl implements TodoApiService {
 
         return new ResponseEntity<>(new ResData<>(dbInfo, "성공했습니다."), HttpStatus.CREATED);
     }
+
+    /**
+     * 수정
+     *  - 전처리
+     *
+     * @param param
+     * @return
+     */
+    @Override
+    public ResponseEntity<ResData<TodoEntity>> preModify(TodoDTO.Modify param) {
+        TodoEntity dbInfo = todoRepository.findOne(param.getTodoId());
+        if (dbInfo == null) {
+            return new ResponseEntity<>(new ResData<>(null, "데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(new ResData<>(dbInfo, "성공했습니다."), HttpStatus.OK);
+    }
+
+    /**
+     * 수정
+     *
+     * @param param
+     * @return
+     */
+    @Transactional
+    @Override
+    public ResponseEntity<ResData<TodoEntity>> modify(TodoDTO.Modify param) {
+        //@formatter:off
+		TodoEntity dbParam = TodoEntity.builder()
+			.todoId(param.getTodoId())
+			.content(param.getContent())
+			.statusCd(param.getStatusCd())
+				.build();
+		//@formatter:on
+
+        TodoEntity dbInfo = todoRepository.save(dbParam);
+
+        return new ResponseEntity<>(new ResData<>(dbInfo, "성공했습니다."), HttpStatus.OK);
+    }
 }

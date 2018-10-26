@@ -27,4 +27,21 @@ public interface TodoApiService {
      * @return
      */
     ResponseEntity<ResData<TodoEntity>> add(TodoDTO.Add param);
+
+    /**
+     * 수정
+     *  - 전처리
+     *
+     * @param param
+     * @return
+     */
+    ResponseEntity<ResData<TodoEntity>> preModify(TodoDTO.Modify param);
+
+    /**
+     * 수정
+     *
+     * @param param
+     * @return
+     */
+    ResponseEntity<ResData<TodoEntity>> modify(TodoDTO.Modify param);
 }
