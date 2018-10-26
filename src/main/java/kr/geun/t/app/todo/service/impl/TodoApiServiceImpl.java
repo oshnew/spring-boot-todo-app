@@ -48,7 +48,7 @@ public class TodoApiServiceImpl implements TodoApiService {
         Map<String, Object> rtnMap = new HashMap<>();
 
         Page<TodoEntity> resultList = todoRepository.findAll(pageable);
-        if (resultList.getTotalPages() == 0) {
+        if (resultList.getTotalElements() == 0) {
             return new ResponseEntity<>(new ResData<>(rtnMap, "등록된 데이터가 없습니다."), HttpStatus.OK);
         }
 
