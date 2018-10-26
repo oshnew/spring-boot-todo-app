@@ -10,11 +10,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
 
 /**
  * 할일 수정에 대한 Test Case
@@ -27,10 +29,10 @@ import static org.junit.Assert.*;
 public class TodoApiServiceModifyTest {
 
     @Autowired
-    private TodoRepository todoRepository;
-
-    @Autowired
     private TodoApiService todoApiService;
+
+    @MockBean
+    private TodoRepository mockTodoRepository;
 
     /**
      * 수정 시 저장되어 있지 않은 할일 아이디를 보낼 경우 실패 테스트
@@ -38,6 +40,7 @@ public class TodoApiServiceModifyTest {
     @Test
     public void testFailPreModify() {
         //GIVEN(Preparation)
+
         //@formatter:off
 		TodoDTO.Modify dbParam = TodoDTO.Modify.builder()
             .todoId(1L)
@@ -45,6 +48,7 @@ public class TodoApiServiceModifyTest {
 			.statusCd(TodoStatusCd.NOT_YET.name())
 			.build();
 		//@formatter:on
+        given(mockTodoRepository.findOne(dbParam.getTodoId())).willReturn(null);
 
         //WHEN(Execution)
         ResponseEntity<ResData<TodoEntity>> result = todoApiService.preModify(dbParam);
@@ -61,15 +65,17 @@ public class TodoApiServiceModifyTest {
     @Test
     public void testSuccessPreModify() {
         //GIVEN(Preparation)
-        TodoEntity preInfo = todoRepository.save(TodoEntity.builder().content("테스트").statusCd(TodoStatusCd.NOT_YET.name()).build());
 
+        TodoEntity mockTodoEntity = TodoEntity.builder().todoId(1L).content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build();
         //@formatter:off
 		TodoDTO.Modify dbParam = TodoDTO.Modify.builder()
-            .todoId(preInfo.getTodoId())
-			.content(preInfo.getContent())
-			.statusCd(preInfo.getStatusCd())
+            .todoId(mockTodoEntity.getTodoId())
+			.content(mockTodoEntity.getContent())
+			.statusCd(mockTodoEntity.getStatusCd())
 			.build();
 		//@formatter:on
+
+        given(mockTodoRepository.findOne(dbParam.getTodoId())).willReturn(mockTodoEntity);
 
         //WHEN(Execution)
         ResponseEntity<ResData<TodoEntity>> result = todoApiService.preModify(dbParam);
@@ -88,15 +94,16 @@ public class TodoApiServiceModifyTest {
     @Test
     public void testSuccessModify() {
         //GIVEN(Preparation)
-        TodoEntity preInfo = todoRepository.save(TodoEntity.builder().content("테스트").statusCd(TodoStatusCd.NOT_YET.name()).build());
-
+        TodoEntity mockTodoEntity = TodoEntity.builder().todoId(1L).content("변경 테스트").statusCd(TodoStatusCd.NOT_YET.name()).build();
         //@formatter:off
 		TodoDTO.Modify dbParam = TodoDTO.Modify.builder()
-            .todoId(preInfo.getTodoId())
-			.content("변경 테스트")
-			.statusCd(preInfo.getStatusCd())
+            .todoId(mockTodoEntity.getTodoId())
+			.content(mockTodoEntity.getContent())
+			.statusCd(mockTodoEntity.getStatusCd())
 			.build();
 		//@formatter:on
+
+        given(mockTodoRepository.save(mockTodoEntity)).willReturn(mockTodoEntity);
 
         //WHEN(Execution)
         ResponseEntity<ResData<TodoEntity>> result = todoApiService.modify(dbParam);
@@ -108,7 +115,6 @@ public class TodoApiServiceModifyTest {
         assertNotNull(todoEntity);
         assertEquals(dbParam.getTodoId(), todoEntity.getTodoId());
         assertEquals(dbParam.getContent(), todoEntity.getContent());
-        assertNotEquals(preInfo.getContent(), todoEntity.getContent());
 
     }
 }
