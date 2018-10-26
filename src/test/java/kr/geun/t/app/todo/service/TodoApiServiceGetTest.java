@@ -5,18 +5,21 @@ import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.dto.TodoDTO;
 import kr.geun.t.app.todo.entity.TodoEntity;
 import kr.geun.t.app.todo.entity.TodoRefEntity;
-import kr.geun.t.app.todo.repository.TodoRefRepository;
 import kr.geun.t.app.todo.repository.TodoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
 
 /**
  * 단건조회에 대한 Test case
@@ -28,11 +31,8 @@ import static org.junit.Assert.*;
 @SpringBootTest
 public class TodoApiServiceGetTest {
 
-    @Autowired
-    private TodoRepository todoRepository;
-
-    @Autowired
-    private TodoRefRepository todoRefRepository;
+    @MockBean
+    private TodoRepository mockTodoRepository;
 
     @Autowired
     private TodoApiService todoApiService;
@@ -48,6 +48,7 @@ public class TodoApiServiceGetTest {
             .todoId(1L)
 			.build();
 		//@formatter:on
+        given(mockTodoRepository.findOne(dbParam.getTodoId())).willReturn(null);
 
         //WHEN(Execution)
         ResponseEntity<ResData<TodoEntity>> result = todoApiService.get(dbParam);
@@ -64,12 +65,14 @@ public class TodoApiServiceGetTest {
     @Test
     public void testSuccessGetOnlyTodo() {
         //GIVEN(Preparation)
-        TodoEntity preGetInfo1 = todoRepository.save(TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build());
         //@formatter:off
 		TodoDTO.Get dbParam = TodoDTO.Get.builder()
-            .todoId(preGetInfo1.getTodoId())
+            .todoId(1L)
 			.build();
 		//@formatter:on
+        TodoEntity mockTodoEntity = TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build();
+
+        given(mockTodoRepository.findOne(dbParam.getTodoId())).willReturn(mockTodoEntity);
 
         //WHEN(Execution)
         ResponseEntity<ResData<TodoEntity>> result = todoApiService.get(dbParam);
@@ -79,7 +82,7 @@ public class TodoApiServiceGetTest {
         //THEN(Verification)
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(todoEntity);
-        assertEquals(preGetInfo1.getContent(), todoEntity.getContent());
+        assertEquals(mockTodoEntity.getContent(), todoEntity.getContent());
     }
 
     /**
@@ -88,17 +91,20 @@ public class TodoApiServiceGetTest {
     @Test
     public void testSuccessGetWithTodoRef() {
         //GIVEN(Preparation)
-        TodoEntity preGetInfo1 = todoRepository.save(TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build());
-        TodoEntity preGetInfo2 = todoRepository.save(TodoEntity.builder().content("빨래").statusCd(TodoStatusCd.NOT_YET.name()).build());
-
-        TodoRefEntity preRefInfo1 = todoRefRepository.save(
-            TodoRefEntity.builder().parentTodoId(preGetInfo2.getTodoId()).refTodoId(preGetInfo1.getTodoId()).build());
-
         //@formatter:off
 		TodoDTO.Get dbParam = TodoDTO.Get.builder()
-            .todoId(preGetInfo2.getTodoId())
+            .todoId(1L)
 			.build();
+
+		TodoEntity mockTodoEntity = TodoEntity.builder()
+            .content("집안일")
+            .statusCd(TodoStatusCd.NOT_YET.name())
+                .todoRefs(Arrays.asList(TodoRefEntity.builder().parentTodoId(dbParam.getTodoId()).refTodoId(2L).build()))
+            .build();
+
 		//@formatter:on
+
+        given(mockTodoRepository.findOne(dbParam.getTodoId())).willReturn(mockTodoEntity);
 
         //WHEN(Execution)
         ResponseEntity<ResData<TodoEntity>> result = todoApiService.get(dbParam);
@@ -108,10 +114,9 @@ public class TodoApiServiceGetTest {
         //THEN(Verification)
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(todoEntity);
-        assertEquals(preGetInfo2.getContent(), todoEntity.getContent());
+        assertEquals(mockTodoEntity.getContent(), todoEntity.getContent());
         assertEquals(1, todoEntity.getTodoRefs().size());
 
-        assertEquals(preRefInfo1.getRefId(), todoEntity.getTodoRefs().get(0).getRefId());
-        assertEquals(preGetInfo1.getTodoId(), todoEntity.getTodoRefs().get(0).getRefTodoId());
+        assertEquals(mockTodoEntity.getTodoRefs().get(0).getRefTodoId(), todoEntity.getTodoRefs().get(0).getRefTodoId());
     }
 }
