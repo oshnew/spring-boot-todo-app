@@ -1,0 +1,13 @@
+server:
+  port: 9999
+spring:
+  mvc:
+    servlet:
+      load-on-startup: 1
+  http:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+    multipart:
+      enabled: false
