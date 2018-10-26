@@ -8,7 +8,6 @@ import kr.geun.t.app.todo.entity.TodoRefEntity;
 import kr.geun.t.app.todo.repository.TodoRefRepository;
 import kr.geun.t.app.todo.repository.TodoRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,22 +40,11 @@ public class TodoApiServiceAddTest {
     @Autowired
     private TodoApiService todoApiService;
 
-    private TodoEntity preAddInfo;
-
-    /**
-     * Test 실행 전 동작
-     */
-    @Before
-    public void setUp() throws Exception {
-        preAddInfo = todoRepository.save(TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build());
-
-    }
-
     /**
      * 할일만 입력할 경우에 대한 성공 테스트
      */
     @Test
-    public void testSuccessOnlyTodo() {
+    public void testSuccessAddOnlyTodo() {
         //GIVEN(Preparation)
         //@formatter:off
 		TodoDTO.Add dbParam = TodoDTO.Add.builder()
@@ -84,8 +72,9 @@ public class TodoApiServiceAddTest {
      * 할일과 참조가 함께 추가되는 경우의 성공 테스트
      */
     @Test
-    public void testSuccessWithTodoRef() {
+    public void testSuccessAddWithTodoRef() {
         //GIVEN(Preparation)
+        TodoEntity preAddInfo = todoRepository.save(TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build());
         //@formatter:off
 		TodoDTO.Add dbParam = TodoDTO.Add.builder()
 			.content("빨래")
