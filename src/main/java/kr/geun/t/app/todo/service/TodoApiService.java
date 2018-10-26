@@ -13,6 +13,14 @@ import org.springframework.http.ResponseEntity;
 public interface TodoApiService {
 
     /**
+     * 단건조회
+     *
+     * @param param
+     * @return
+     */
+    ResponseEntity<ResData<TodoEntity>> get(TodoDTO.Get param);
+
+    /**
      * 추가
      *
      * @param param

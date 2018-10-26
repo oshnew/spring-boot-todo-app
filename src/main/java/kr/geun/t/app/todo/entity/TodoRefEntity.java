@@ -1,9 +1,13 @@
 package kr.geun.t.app.todo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -56,4 +60,25 @@ public class TodoRefEntity {
 	@UpdateTimestamp
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
+
+	@JsonBackReference
+	@ManyToOne
+	@JoinColumn(name = "parent_todo_id", insertable = false, updatable = false)
+	private TodoEntity todoJoinInfo;
+
+	@OneToOne
+	@JoinColumn(name = "ref_todo_id", referencedColumnName = "todo_id", insertable = false, updatable = false)
+	@JsonIgnoreProperties("todoRefs") //무한루프 방지
+	private TodoEntity todoRefsInfo;
+
+	/**
+	 * 무한루프로 인해 override
+	 *
+	 * @return
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
+
 }

@@ -33,6 +33,22 @@ public class TodoApiServiceImpl implements TodoApiService {
     private TodoRefRepository todoRefRepository;
 
     /**
+     * 단건조회
+     *
+     * @param param
+     * @return
+     */
+    @Override
+    public ResponseEntity<ResData<TodoEntity>> get(TodoDTO.Get param) {
+        TodoEntity dbInfo = todoRepository.findOne(param.getTodoId());
+        if (dbInfo == null) {
+            return new ResponseEntity<>(new ResData<>(null, "데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(new ResData<>(dbInfo, "성공했습니다."), HttpStatus.OK);
+    }
+
+    /**
      * 추가
      *
      * @param param

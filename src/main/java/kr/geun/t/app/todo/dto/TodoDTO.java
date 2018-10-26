@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 /**
@@ -32,5 +33,18 @@ public class TodoDTO {
         private String statusCd;
 
         private Long[] refTodos;
+    }
+
+    /**
+     * 단건조회
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Get {
+
+        @Min(0)
+        private Long todoId;
     }
 }

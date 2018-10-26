@@ -1,14 +1,18 @@
 package kr.geun.t.app.todo.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 할일 관련 메인 테이블
@@ -57,4 +61,20 @@ public class TodoEntity {
 	@UpdateTimestamp
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
+
+	@JsonManagedReference
+	@OneToMany(mappedBy = "todoJoinInfo", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OrderBy("ref_todo_id DESC")
+	private List<TodoRefEntity> todoRefs;
+
+	/**
+	 * 무한루프로 인해 override
+	 *
+	 * @return
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
+
 }
