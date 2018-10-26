@@ -1,5 +1,6 @@
 package kr.geun.t.app.todo.service.impl;
 
+import kr.geun.t.app.common.pagination.PaginationInfo;
 import kr.geun.t.app.common.response.ResData;
 import kr.geun.t.app.todo.dto.TodoDTO;
 import kr.geun.t.app.todo.entity.TodoEntity;
@@ -9,13 +10,17 @@ import kr.geun.t.app.todo.repository.TodoRepository;
 import kr.geun.t.app.todo.service.TodoApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 할일 관련 API 서비스
@@ -31,6 +36,36 @@ public class TodoApiServiceImpl implements TodoApiService {
 
     @Autowired
     private TodoRefRepository todoRefRepository;
+
+    /**
+     * 리스트
+     *
+     * @param pageable
+     * @return
+     */
+    @Override
+    public ResponseEntity<ResData<Map<String, Object>>> list(Pageable pageable) {
+        Map<String, Object> rtnMap = new HashMap<>();
+
+        Page<TodoEntity> resultList = todoRepository.findAll(pageable);
+        if (resultList.getTotalPages() == 0) {
+            return new ResponseEntity<>(new ResData<>(rtnMap, "등록된 데이터가 없습니다."), HttpStatus.OK);
+        }
+
+        //@formatter:off
+        PaginationInfo paginationInfo = new PaginationInfo(
+            resultList.getNumber(),
+            resultList.getNumberOfElements(),
+            resultList.getTotalElements(),
+			resultList.getTotalPages(),
+            pageable.getPageSize());
+        //@formatter:on
+
+        rtnMap.put("resultList", resultList);
+        rtnMap.put("pagination", paginationInfo);
+
+        return new ResponseEntity<>(new ResData<>(rtnMap, "성공했습니다."), HttpStatus.OK);
+    }
 
     /**
      * 단건조회
