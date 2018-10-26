@@ -11,6 +11,7 @@ public class TodoApplicationTests {
 
 	@Test
 	public void contextLoads() {
+		TodoApplication.main(new String[] {});
 	}
 
 }

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -25,8 +25,8 @@ public class TodoDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Add {
+        @NotBlank
         @Size(min = 2, max = 1024)
-        @NotEmpty
         private String content;
 
         @TodoStatusCdValid
@@ -44,7 +44,7 @@ public class TodoDTO {
     @AllArgsConstructor
     public static class Get {
 
-        @Min(0)
+        @Min(1)
         private Long todoId;
     }
 
@@ -56,11 +56,12 @@ public class TodoDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Modify {
-        @Min(0)
+
+        @Min(1)
         private Long todoId;
 
+        @NotBlank
         @Size(min = 2, max = 1024)
-        @NotEmpty
         private String content;
 
         @TodoStatusCdValid
