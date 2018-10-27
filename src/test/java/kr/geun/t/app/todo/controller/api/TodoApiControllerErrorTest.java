@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @Slf4j
 @RunWith(SpringRunner.class)
-@WebMvcTest(TodoApiController.class)
+@WebMvcTest(value = TodoApiController.class)
 public class TodoApiControllerErrorTest {
 
 	@MockBean
@@ -44,9 +44,7 @@ public class TodoApiControllerErrorTest {
 
 	@Before
 	public void setUp() {
-		mvc = MockMvcBuilders.standaloneSetup(mockController)
-			.setControllerAdvice(new ExceptionHandler())
-			.build();
+		mvc = MockMvcBuilders.standaloneSetup(mockController).setControllerAdvice(new ExceptionHandler()).build();
 
 	}
 

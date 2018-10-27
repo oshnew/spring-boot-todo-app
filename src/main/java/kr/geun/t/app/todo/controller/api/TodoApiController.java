@@ -27,7 +27,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/v1", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api/v1")
 public class TodoApiController {
 
     @Autowired
@@ -43,11 +43,11 @@ public class TodoApiController {
     @GetMapping(value = "/todo")
     public ResponseEntity<ResData<Map<String, Object>>> list(@Valid TodoDTO.List param, BindingResult result) {
         if (result.hasErrors()) {
-            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "<br>")), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "\n")), HttpStatus.BAD_REQUEST);
         }
 
         Sort sort = new Sort(Sort.Direction.DESC, "todoId");
-        Pageable pageable = new PageRequest(param.getPageNumber(), 3, sort);
+        Pageable pageable = new PageRequest(param.getPageNumber(), 10, sort);
 
         return todoApiService.list(pageable); //글로벌 익셉션 핸들링 필요
     }
@@ -63,7 +63,7 @@ public class TodoApiController {
     @GetMapping(value = "/todo/{todoId}")
     public ResponseEntity<ResData<TodoEntity>> get(@Valid TodoDTO.Get param, BindingResult result) {
         if (result.hasErrors()) {
-            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "<br>")), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "\n")), HttpStatus.BAD_REQUEST);
         }
 
         return todoApiService.get(param);
@@ -78,9 +78,9 @@ public class TodoApiController {
      * @return
      */
     @PostMapping("/todo")
-    public ResponseEntity<ResData<TodoEntity>> add(@Valid TodoDTO.Add param, BindingResult result) {
+    public ResponseEntity<ResData<TodoEntity>> add(@ModelAttribute @Valid TodoDTO.Add param, BindingResult result) {
         if (result.hasErrors()) {
-            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "<br>")), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "\n")), HttpStatus.BAD_REQUEST);
         }
 
         return todoApiService.add(param);
@@ -96,7 +96,7 @@ public class TodoApiController {
     @PutMapping("/todo/{todoId}")
     public ResponseEntity<ResData<TodoEntity>> modify(@RequestBody @Valid TodoDTO.Modify param, BindingResult result) {
         if (result.hasErrors()) {
-            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "<br>")), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "\n")), HttpStatus.BAD_REQUEST);
         }
 
         ResponseEntity<ResData<TodoEntity>> preChk = todoApiService.preModify(param);
@@ -118,7 +118,7 @@ public class TodoApiController {
     @PatchMapping("/todo/{todoId}")
     public ResponseEntity<ResData<TodoEntity>> status(@RequestBody @Valid TodoDTO.ModifyStatus param, BindingResult result) {
         if (result.hasErrors()) {
-            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "<br>")), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "\n")), HttpStatus.BAD_REQUEST);
         }
 
         ResponseEntity<ResData<TodoEntity>> preChk = todoApiService.preModifyStatus(param);
@@ -140,7 +140,7 @@ public class TodoApiController {
     @GetMapping(value = "/todo/search")
     public ResponseEntity<ResData<List<TodoEntity>>> search(@Valid TodoDTO.Search param, BindingResult result) {
         if (result.hasErrors()) {
-            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "<br>")), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "\n")), HttpStatus.BAD_REQUEST);
         }
 
         return todoApiService.search(param);

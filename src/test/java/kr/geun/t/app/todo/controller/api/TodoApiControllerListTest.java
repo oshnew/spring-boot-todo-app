@@ -58,7 +58,7 @@ public class TodoApiControllerListTest {
         list.add(TodoEntity.builder().content("방청소").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
 
         Sort sort = new Sort(Sort.Direction.DESC, "todoId");
-        Pageable pageable = new PageRequest(0, 3, sort);
+        Pageable pageable = new PageRequest(0, 10, sort); //TODO : 상수값으로 변환해야함.
 
         given(todoRepository.findAll(pageable)).willReturn(new PageImpl<>(list));
 
