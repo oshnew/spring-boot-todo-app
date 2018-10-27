@@ -114,7 +114,7 @@ public class TodoApiController {
      * @param result
      * @return
      */
-    @PatchMapping("/todo/{taskId}")
+    @PatchMapping("/todo/{todoId}")
     public ResponseEntity<ResData<TodoEntity>> status(@RequestBody @Valid TodoDTO.ModifyStatus param, BindingResult result) {
         if (result.hasErrors()) {
             return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "<br>")), HttpStatus.BAD_REQUEST);
