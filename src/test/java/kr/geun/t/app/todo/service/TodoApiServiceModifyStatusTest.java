@@ -5,10 +5,12 @@ import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.dto.TodoDTO;
 import kr.geun.t.app.todo.entity.TodoEntity;
 import kr.geun.t.app.todo.entity.TodoRefEntity;
+import kr.geun.t.app.todo.repository.TodoRefRepository;
 import kr.geun.t.app.todo.repository.TodoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -37,6 +39,9 @@ public class TodoApiServiceModifyStatusTest {
 
     @MockBean
     private TodoRepository mockTodoRepository;
+
+    @MockBean
+    private TodoRefRepository todoRefRepository;
 
     /**
      * 데이터를 찾을 수 없는 경우 실패하는지 테스트
@@ -76,15 +81,17 @@ public class TodoApiServiceModifyStatusTest {
 		TodoEntity mockTodoEntity = TodoEntity.builder()
             .todoId(dbParam.getTodoId())
             .statusCd(TodoStatusCd.NOT_YET.name())
-                .todoRefs(Arrays.asList(
-                    TodoRefEntity.builder().parentTodoId(dbParam.getTodoId()).refTodoId(2L)
-                        .todoRefsInfo(TodoEntity.builder().statusCd(TodoStatusCd.NOT_YET.name()).build())
-                        .build()
-                ))
             .build();
-		//@formatter:on
 
+		given(todoRefRepository.findByRefTodoId(dbParam.getTodoId())).willReturn(
+            Arrays.asList(
+                TodoRefEntity.builder().parentTodoId(dbParam.getTodoId()).refTodoId(2L)
+                    .todoJoinInfo(TodoEntity.builder().statusCd(TodoStatusCd.NOT_YET.name()).build())
+                    .build())
+        );
+		//@formatter:on
         given(mockTodoRepository.findOne(dbParam.getTodoId())).willReturn(mockTodoEntity);
+
 
         ResponseEntity<ResData<TodoEntity>> result = todoApiService.preModifyStatus(dbParam);
         ResData<TodoEntity> resultBody = result.getBody();

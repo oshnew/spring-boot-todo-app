@@ -124,6 +124,8 @@ public class TodoApiServiceImpl implements TodoApiService {
             return new ResponseEntity<>(new ResData<>(null, "데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
         }
 
+        //TODO : 참조 등록시 본인 등록 못하도록 방어로직 추가 필요
+
         return new ResponseEntity<>(new ResData<>("성공했습니다."), HttpStatus.OK);
     }
 
@@ -192,10 +194,12 @@ public class TodoApiServiceImpl implements TodoApiService {
             return new ResponseEntity<>(new ResData<>("데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
         }
 
+        List<TodoRefEntity> refEntityList = todoRefRepository.findByRefTodoId(param.getTodoId());
+
         boolean refsCmplExist = false;
-        if (dbInfo.getTodoRefs() != null && dbInfo.getTodoRefs().isEmpty() == false) {
-            refsCmplExist = dbInfo.getTodoRefs().stream().anyMatch(
-                t -> StringUtils.equals(t.getTodoRefsInfo().getStatusCd(), TodoStatusCd.NOT_YET.name()));
+        if (refEntityList.isEmpty() == false) {
+            refsCmplExist = refEntityList.stream().anyMatch(
+                t -> StringUtils.equals(t.getTodoJoinInfo().getStatusCd(), TodoStatusCd.NOT_YET.name()));
         }
 
         if (refsCmplExist) {
