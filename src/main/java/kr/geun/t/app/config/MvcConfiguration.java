@@ -15,7 +15,6 @@ import org.springframework.web.servlet.resource.VersionResourceResolver;
  *
  * @author akageun
  */
-@EnableCaching
 @Configuration
 @EnableWebMvc
 public class MvcConfiguration extends WebMvcConfigurerAdapter {

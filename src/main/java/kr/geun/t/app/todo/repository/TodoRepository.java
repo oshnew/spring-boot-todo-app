@@ -19,6 +19,5 @@ public interface TodoRepository extends JpaRepository<TodoEntity, Long> {
 	 * @param keyword
 	 * @return
 	 */
-	@Cacheable(value = "searchCache", key = "#root.methodName+'_'+#p0")
 	List<TodoEntity> findByContentContaining(String keyword);
 }
