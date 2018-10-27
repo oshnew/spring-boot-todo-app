@@ -11,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -74,5 +71,34 @@ public class TodoApiController {
             log.error("error message : {} || param : {} || {}", e.getMessage(), param, e);
             return new ResponseEntity<>(new ResData<>("시스템에러가 발생했습니다."), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * 수정
+     *
+     * @param param
+     * @param result
+     * @return
+     */
+    @PutMapping("/todo/{todoId}")
+    public ResponseEntity<ResData<TodoEntity>> modify(@RequestBody @Valid TodoDTO.Modify param, BindingResult result) {
+        if (result.hasErrors()) {
+            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "<br>")), HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+
+            ResponseEntity<ResData<TodoEntity>> preChk = todoApiService.preModify(param);
+            if (preChk.getStatusCode().is2xxSuccessful() == false) {
+                return preChk;
+            }
+
+            return todoApiService.modify(param);
+
+        } catch (Exception e) {
+            log.error("error message : {} || param : {} || {}", e.getMessage(), param, e);
+            return new ResponseEntity<>(new ResData<>("시스템에러가 발생했습니다."), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }

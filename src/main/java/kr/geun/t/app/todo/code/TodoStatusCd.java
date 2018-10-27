@@ -6,5 +6,5 @@ package kr.geun.t.app.todo.code;
  * @author akageun
  */
 public enum TodoStatusCd {
-    NOT_YET, COMPLETE;
+    NOT_YET, COMPLETE
 }

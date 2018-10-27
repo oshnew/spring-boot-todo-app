@@ -44,8 +44,8 @@ public class PaginationInfo {
 	private int firstBlockPageNo; //첫번째 블럭 페이지 번호
 	private int lastBlockPageNo; //마지막 블럭 페이지 번호
 
-	private int firstPageNo; //맨앞으로 갈 페이지 번호
-	private int lastPageNo; //맨뒤로 갈 페이지 번호
+	private int firstPageNo = 1; //맨앞으로 갈 페이지 번호
+	private int lastPageNo = totalPages; //맨뒤로 갈 페이지 번호
 
 	private int pageBlockNo; //페이지 블럭 번호
 
@@ -81,11 +81,4 @@ public class PaginationInfo {
 
 	}
 
-	public int getFirstPageNo() {
-		return 1;
-	}
-
-	public int getLastPageNo() {
-		return totalPages;
-	}
 }
