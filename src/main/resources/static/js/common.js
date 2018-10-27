@@ -42,5 +42,9 @@ var CmnUtils = {
      */
     openModal: function (modalId) {
         $("#" + modalId).modal({backdrop: false});
+    },
+
+    closeModal: function(modalId){
+        $("#" + modalId).modal('hide')
     }
 }
