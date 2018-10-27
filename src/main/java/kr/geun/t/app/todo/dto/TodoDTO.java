@@ -69,4 +69,21 @@ public class TodoDTO {
 
         private Long[] refTodos;
     }
+
+    /**
+     * 상태값 수정
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ModifyStatus {
+        @Min(1)
+        private Long todoId;
+
+        @TodoStatusCdValid
+        private String statusCd;
+
+        private String content; //TODO : 추후 다이나믹쿼리를 사용하면 제거
+    }
 }

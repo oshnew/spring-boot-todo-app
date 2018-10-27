@@ -2,6 +2,7 @@ package kr.geun.t.app.todo.service.impl;
 
 import kr.geun.t.app.common.pagination.PaginationInfo;
 import kr.geun.t.app.common.response.ResData;
+import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.dto.TodoDTO;
 import kr.geun.t.app.todo.entity.TodoEntity;
 import kr.geun.t.app.todo.entity.TodoRefEntity;
@@ -9,6 +10,7 @@ import kr.geun.t.app.todo.repository.TodoRefRepository;
 import kr.geun.t.app.todo.repository.TodoRepository;
 import kr.geun.t.app.todo.service.TodoApiService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -139,7 +141,7 @@ public class TodoApiServiceImpl implements TodoApiService {
             return new ResponseEntity<>(new ResData<>(null, "데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(new ResData<>(dbInfo, "성공했습니다."), HttpStatus.OK);
+        return new ResponseEntity<>(new ResData<>("성공했습니다."), HttpStatus.OK);
     }
 
     /**
@@ -162,5 +164,57 @@ public class TodoApiServiceImpl implements TodoApiService {
         TodoEntity dbInfo = todoRepository.save(dbParam);
 
         return new ResponseEntity<>(new ResData<>(dbInfo, "성공했습니다."), HttpStatus.OK);
+    }
+
+    /**
+     * 완료처리
+     * - 전처리
+     *
+     * @param param
+     * @return
+     */
+    @Override
+    public ResponseEntity<ResData<TodoEntity>> preModifyStatus(TodoDTO.ModifyStatus param) {
+        TodoEntity dbInfo = todoRepository.findOne(param.getTodoId());
+        if (dbInfo == null) {
+            return new ResponseEntity<>(new ResData<>("데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
+        }
+
+        boolean refsCmplExist = false;
+        if (dbInfo.getTodoRefs() != null && dbInfo.getTodoRefs().isEmpty() == false) {
+            refsCmplExist = dbInfo.getTodoRefs().stream().anyMatch(
+                t -> StringUtils.equals(t.getTodoRefsInfo().getStatusCd(), TodoStatusCd.NOT_YET.name()));
+        }
+
+        if (refsCmplExist) {
+            return new ResponseEntity<>(new ResData<>("참조한 이슈들 중 완료되지 않은 이슈가 있습니다."), HttpStatus.BAD_REQUEST);
+        }
+
+        param.setContent(dbInfo.getContent()); // TODO : 다이나믹 쿼리가 되면 제거 예정
+
+        return new ResponseEntity<>(new ResData<>("성공했습니다."), HttpStatus.OK);
+    }
+
+    /**
+     * 완료처리
+     *
+     * @param param
+     * @return
+     */
+    @Override
+    public ResponseEntity<ResData<TodoEntity>> modifyStatus(TodoDTO.ModifyStatus param) {
+
+        //@formatter:off
+		TodoEntity dbParam = TodoEntity.builder()
+			.todoId(param.getTodoId())
+			.statusCd(param.getStatusCd())
+				.build();
+
+		dbParam.setContent(param.getContent()); // TODO : 다이나믹 쿼리가 되면 제거 예정
+		//@formatter:on
+
+        todoRepository.save(dbParam);
+
+        return new ResponseEntity<>(new ResData<>("성공했습니다."), HttpStatus.OK);
     }
 }

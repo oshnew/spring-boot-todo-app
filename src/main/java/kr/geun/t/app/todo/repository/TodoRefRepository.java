@@ -12,12 +12,4 @@ import java.util.List;
  */
 public interface TodoRefRepository extends JpaRepository<TodoRefEntity, Long> {
 
-	/**
-	 * 참조한 할일 정보 조회
-	 *
-	 * @param parentTodoId
-	 * @return
-	 */
-	List<TodoRefEntity> findByParentTodoId(Long parentTodoId);
-
 }

@@ -55,4 +55,21 @@ public interface TodoApiService {
      * @return
      */
     ResponseEntity<ResData<TodoEntity>> modify(TodoDTO.Modify param);
+
+    /**
+     * 완료처리
+     * - 전처리
+     *
+     * @param param
+     * @return
+     */
+    ResponseEntity<ResData<TodoEntity>> preModifyStatus(TodoDTO.ModifyStatus param);
+
+    /**
+     * 완료처리
+     *
+     * @param param
+     * @return
+     */
+    ResponseEntity<ResData<TodoEntity>> modifyStatus(TodoDTO.ModifyStatus param);
 }

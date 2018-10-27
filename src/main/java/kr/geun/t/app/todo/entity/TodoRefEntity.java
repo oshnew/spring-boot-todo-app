@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "todo_reference")
+@Table(name = "todo_reference", indexes = {@Index(name = "IDX_refTodoId", columnList = "ref_todo_id")})
 public class TodoRefEntity {
 
 	/**
