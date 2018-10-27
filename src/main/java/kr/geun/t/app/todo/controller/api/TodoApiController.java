@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -127,5 +128,21 @@ public class TodoApiController {
 
         return todoApiService.modifyStatus(param);
 
+    }
+
+    /**
+     * 검색
+     *
+     * @param param
+     * @param result
+     * @return
+     */
+    @GetMapping(value = "/todo/search")
+    public ResponseEntity<ResData<List<TodoEntity>>> search(@Valid TodoDTO.Search param, BindingResult result) {
+        if (result.hasErrors()) {
+            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "<br>")), HttpStatus.BAD_REQUEST);
+        }
+
+        return todoApiService.search(param);
     }
 }

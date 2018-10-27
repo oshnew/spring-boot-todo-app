@@ -98,4 +98,18 @@ public class TodoDTO {
 
         private String content; //TODO : 추후 다이나믹쿼리를 사용하면 제거
     }
+
+    /**
+     * 검색
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Search {
+
+        @NotBlank
+        @Size(min = 2, max = 1024)
+        private String keyword;
+    }
 }

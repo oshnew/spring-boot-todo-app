@@ -6,6 +6,7 @@ import kr.geun.t.app.todo.entity.TodoEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -72,4 +73,12 @@ public interface TodoApiService {
      * @return
      */
     ResponseEntity<ResData<TodoEntity>> modifyStatus(TodoDTO.ModifyStatus param);
+
+    /**
+     * 검색
+     *
+     * @param param
+     * @return
+     */
+    ResponseEntity<ResData<List<TodoEntity>>> search(TodoDTO.Search param);
 }

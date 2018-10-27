@@ -229,4 +229,17 @@ public class TodoApiServiceImpl implements TodoApiService {
 
         return new ResponseEntity<>(new ResData<>("성공했습니다."), HttpStatus.OK);
     }
+
+    /**
+     * 검색
+     *
+     * @param param
+     * @return
+     */
+    @Override
+    public ResponseEntity<ResData<List<TodoEntity>>> search(TodoDTO.Search param) {
+        List<TodoEntity> list = todoRepository.findByContentContaining(param.getKeyword());
+
+        return new ResponseEntity<>(new ResData<>(list, "성공했습니다."), HttpStatus.OK);
+    }
 }
