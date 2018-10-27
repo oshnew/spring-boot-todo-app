@@ -30,3 +30,6 @@ spring:
       settings:
         trace: false
         web-allow-others: false
+  cache:
+    ehcache:
+      config: classpath:ehcache.xml

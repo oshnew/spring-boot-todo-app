@@ -198,8 +198,7 @@ public class TodoApiServiceImpl implements TodoApiService {
 
         boolean refsCmplExist = false;
         if (refEntityList.isEmpty() == false) {
-            refsCmplExist = refEntityList.stream().anyMatch(
-                t -> StringUtils.equals(t.getTodoJoinInfo().getStatusCd(), TodoStatusCd.NOT_YET.name()));
+            refsCmplExist = refEntityList.stream().anyMatch(t -> StringUtils.equals(t.getTodoJoinInfo().getStatusCd(), TodoStatusCd.NOT_YET.name()));
         }
 
         if (refsCmplExist) {
