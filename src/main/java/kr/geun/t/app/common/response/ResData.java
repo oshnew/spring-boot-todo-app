@@ -10,12 +10,17 @@ import lombok.NoArgsConstructor;
  *
  * @author akageun
  */
-@Data
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class ResData<T> {
 
     private T data;
     private String msg;
+
+    public ResData(String msg) {
+        this.msg = msg;
+    }
 }

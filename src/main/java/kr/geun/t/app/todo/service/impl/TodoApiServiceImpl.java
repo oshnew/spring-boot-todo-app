@@ -100,7 +100,7 @@ public class TodoApiServiceImpl implements TodoApiService {
             .build();
         //@formatter:on
 
-        TodoEntity dbInfo = todoRepository.save(dbParam);
+        TodoEntity dbTmpInfo = todoRepository.save(dbParam);
 
         if (param.getRefTodos() != null && param.getRefTodos().length > 0) { //참조걸린 할일들
             List<TodoRefEntity> refEntities = new ArrayList<>();
@@ -109,7 +109,7 @@ public class TodoApiServiceImpl implements TodoApiService {
                 //@formatter:off
                 TodoRefEntity refParam = TodoRefEntity
                     .builder()
-                        .parentTodoId(dbInfo.getTodoId())
+                        .parentTodoId(dbTmpInfo.getTodoId())
                         .refTodoId(todoId)
                     .build();
                 //@formatter:on
@@ -119,6 +119,8 @@ public class TodoApiServiceImpl implements TodoApiService {
 
             todoRefRepository.save(refEntities);
         }
+
+        TodoEntity dbInfo = todoRepository.findOne(dbTmpInfo.getTodoId());
 
         return new ResponseEntity<>(new ResData<>(dbInfo, "성공했습니다."), HttpStatus.CREATED);
     }

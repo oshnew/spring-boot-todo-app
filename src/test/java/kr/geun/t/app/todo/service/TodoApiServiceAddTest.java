@@ -12,14 +12,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.BDDMockito.given;
 
 /**
  * 할일 쓰기에 대한 Test Case
@@ -31,10 +34,10 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootTest
 public class TodoApiServiceAddTest {
 
-    @Autowired
+    @MockBean
     private TodoRepository todoRepository;
 
-    @Autowired
+    @MockBean
     private TodoRefRepository todoRefRepository;
 
     @Autowired
@@ -46,25 +49,41 @@ public class TodoApiServiceAddTest {
     @Test
     public void testSuccessAddOnlyTodo() {
         //GIVEN(Preparation)
+        LocalDateTime ldt = LocalDateTime.now();
+
         //@formatter:off
+        TodoEntity mockParam = TodoEntity.builder()
+            .content("집안일")
+            .statusCd(TodoStatusCd.NOT_YET.name())
+            .build();
+
+        TodoEntity mockTodoEntity = TodoEntity.builder()
+            .todoId(1L)
+            .content(mockParam.getContent())
+            .statusCd(mockParam.getStatusCd())
+            .createdAt(ldt)
+            .updatedAt(ldt)
+                .build();
+
 		TodoDTO.Add dbParam = TodoDTO.Add.builder()
-			.content("테스트")
-			.statusCd(TodoStatusCd.NOT_YET.name())
+			.content(mockParam.getContent())
+			.statusCd(mockParam.getStatusCd())
 			.build();
 		//@formatter:on
+
+        given(todoRepository.save(mockParam)).willReturn(mockTodoEntity);
+        given(todoRepository.findOne(mockTodoEntity.getTodoId())).willReturn(mockTodoEntity);
 
         //WHEN(Execution)
         ResponseEntity<ResData<TodoEntity>> result = todoApiService.add(dbParam);
         ResData<TodoEntity> resultBody = result.getBody();
         TodoEntity todoEntity = resultBody.getData();
 
-        TodoEntity dbInfo = todoRepository.findOne(todoEntity.getTodoId());
-
         //THEN(Verification)
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
         //assertEquals("성공했습니다.", resultBody.getMsg());
-        assertNotNull(dbInfo);
-        assertEquals(dbParam.getContent(), dbInfo.getContent());
+        assertNotNull(todoEntity);
+        assertEquals(dbParam.getContent(), todoEntity.getContent());
 
     }
 
@@ -74,29 +93,49 @@ public class TodoApiServiceAddTest {
     @Test
     public void testSuccessAddWithTodoRef() {
         //GIVEN(Preparation)
-        TodoEntity preAddInfo = todoRepository.save(TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build());
+        LocalDateTime ldt = LocalDateTime.now();
+
         //@formatter:off
+        TodoEntity mockParam = TodoEntity.builder()
+            .content("빨래")
+            .statusCd(TodoStatusCd.NOT_YET.name())
+            .build();
+
+        TodoEntity mockTodoEntity = TodoEntity.builder()
+            .todoId(1L)
+            .content(mockParam.getContent())
+            .statusCd(mockParam.getStatusCd())
+            .createdAt(ldt)
+            .updatedAt(ldt)
+                .build();
+
 		TodoDTO.Add dbParam = TodoDTO.Add.builder()
-			.content("빨래")
-			.statusCd(TodoStatusCd.NOT_YET.name())
-            .refTodos(new Long[]{preAddInfo.getTodoId()})
+			.content(mockParam.getContent())
+			.statusCd(mockParam.getStatusCd())
+            .refTodos(new Long[]{2L})
 			.build();
+
+		TodoRefEntity mockTodoRefParam = TodoRefEntity.builder().parentTodoId(mockTodoEntity.getTodoId()).refTodoId(2L).build();
+		TodoRefEntity mockTodoRefEntity = TodoRefEntity.builder().parentTodoId(mockTodoEntity.getTodoId()).refTodoId(2L).build();
 		//@formatter:on
+
+        given(todoRepository.save(mockParam)).willReturn(mockTodoEntity);
+        given(todoRefRepository.save(mockTodoRefParam)).willReturn(mockTodoRefEntity);
+
+        mockTodoEntity.setTodoRefs(Arrays.asList(mockTodoRefEntity));
+
+        given(todoRepository.findOne(mockTodoEntity.getTodoId())).willReturn(mockTodoEntity);
 
         //WHEN(Execution)
         ResponseEntity<ResData<TodoEntity>> result = todoApiService.add(dbParam);
         ResData<TodoEntity> resultBody = result.getBody();
         TodoEntity todoEntity = resultBody.getData();
 
-        TodoEntity dbInfo = todoRepository.findOne(todoEntity.getTodoId());
-        List<TodoRefEntity> refEntityList = todoRefRepository.findByParentTodoId(todoEntity.getTodoId());
-
         //THEN(Verification)
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
         //assertEquals("성공했습니다.", resultBody.getMsg());
-        assertNotNull(dbInfo);
-        assertEquals(dbParam.getContent(), dbInfo.getContent());
-        assertEquals(1, refEntityList.size());
-        assertEquals(preAddInfo.getTodoId(), refEntityList.get(0).getRefTodoId());
+        assertNotNull(todoEntity);
+        assertEquals(dbParam.getContent(), todoEntity.getContent());
+        assertEquals(dbParam.getRefTodos().length, todoEntity.getTodoRefs().size());
     }
 }
