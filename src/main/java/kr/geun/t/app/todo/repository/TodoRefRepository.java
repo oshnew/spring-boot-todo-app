@@ -12,4 +12,10 @@ import java.util.List;
  */
 public interface TodoRefRepository extends JpaRepository<TodoRefEntity, Long> {
 
+	/**
+	 * 상위 할일 아이디로 삭제
+	 *
+	 * @param parentTodoId
+	 */
+	void deleteByParentTodoId(long parentTodoId);
 }

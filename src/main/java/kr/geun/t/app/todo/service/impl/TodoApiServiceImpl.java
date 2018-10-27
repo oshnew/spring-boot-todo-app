@@ -63,7 +63,7 @@ public class TodoApiServiceImpl implements TodoApiService {
             pageable.getPageSize());
         //@formatter:on
 
-        rtnMap.put("resultList", resultList);
+        rtnMap.put("resultList", resultList.getContent());
         rtnMap.put("pagination", paginationInfo);
 
         return new ResponseEntity<>(new ResData<>(rtnMap, "성공했습니다."), HttpStatus.OK);
@@ -103,24 +103,7 @@ public class TodoApiServiceImpl implements TodoApiService {
         //@formatter:on
 
         TodoEntity dbTmpInfo = todoRepository.save(dbParam);
-
-        if (param.getRefTodos() != null && param.getRefTodos().length > 0) { //참조걸린 할일들
-            List<TodoRefEntity> refEntities = new ArrayList<>();
-
-            for (Long todoId : param.getRefTodos()) {
-                //@formatter:off
-                TodoRefEntity refParam = TodoRefEntity
-                    .builder()
-                        .parentTodoId(dbTmpInfo.getTodoId())
-                        .refTodoId(todoId)
-                    .build();
-                //@formatter:on
-
-                refEntities.add(refParam);
-            }
-
-            todoRefRepository.save(refEntities);
-        }
+        addTodoRefs(param.getRefTodos(), dbTmpInfo.getTodoId());
 
         TodoEntity dbInfo = todoRepository.findOne(dbTmpInfo.getTodoId());
 
@@ -162,8 +145,37 @@ public class TodoApiServiceImpl implements TodoApiService {
 		//@formatter:on
 
         TodoEntity dbInfo = todoRepository.save(dbParam);
+        todoRefRepository.deleteByParentTodoId(dbInfo.getTodoId());
+
+        addTodoRefs(param.getRefTodos(), dbInfo.getTodoId());
 
         return new ResponseEntity<>(new ResData<>(dbInfo, "성공했습니다."), HttpStatus.OK);
+    }
+
+    /**
+     * 참조 할일을 추가
+     *
+     * @param refTodos
+     * @param todoId
+     */
+    private void addTodoRefs(Long[] refTodos, long todoId) {
+        if (refTodos != null && refTodos.length > 0) { //참조걸린 할일들
+            List<TodoRefEntity> refEntities = new ArrayList<>();
+
+            for (Long refTodoId : refTodos) {
+                //@formatter:off
+                TodoRefEntity refParam = TodoRefEntity
+                    .builder()
+                        .parentTodoId(todoId)
+                        .refTodoId(refTodoId)
+                    .build();
+                //@formatter:on
+
+                refEntities.add(refParam);
+            }
+
+            todoRefRepository.save(refEntities);
+        }
     }
 
     /**

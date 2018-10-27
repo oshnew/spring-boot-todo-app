@@ -1,9 +1,10 @@
 package kr.geun.t.app.todo.controller.api;
 
-import kr.geun.t.app.common.response.ResData;
 import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.dto.TodoDTO;
 import kr.geun.t.app.todo.entity.TodoEntity;
+import kr.geun.t.app.todo.repository.TodoRefRepository;
+import kr.geun.t.app.todo.repository.TodoRepository;
 import kr.geun.t.app.todo.service.TodoApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -11,9 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -28,14 +27,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @Slf4j
 @RunWith(SpringRunner.class)
-@WebMvcTest(TodoApiController.class)
+@WebMvcTest(value = {TodoApiController.class, TodoApiService.class})
 public class TodoApiControllerGetTest {
 
     @Autowired
     private MockMvc mvc;
 
     @MockBean
-    private TodoApiService todoApiService;
+    private TodoRefRepository todoRefRepository;
+
+    @MockBean
+    private TodoRepository todoRepository;
 
     /**
      * 파라미터 에러 테스트
@@ -100,9 +102,7 @@ public class TodoApiControllerGetTest {
             .todoId(1L)
 			.build();
 
-		given(todoApiService.get(dbParam)).willReturn(
-            new ResponseEntity<>(new ResData<>(null, "데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND)
-        );
+		given(todoRepository.findOne(dbParam.getTodoId())).willReturn(null);
 		//@formatter:on
 
         //@formatter:off
@@ -113,36 +113,6 @@ public class TodoApiControllerGetTest {
 
             //THEN(Verification)
             .andExpect(status().isNotFound())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.msg").isNotEmpty())
-            ;
-        //@formatter:on
-    }
-
-    /**
-     * 시스템 에러 테스트
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testFailSystemErr() throws Exception {
-        //GIVEN(Preparation)
-        //@formatter:off
-		TodoDTO.Get dbParam = TodoDTO.Get.builder()
-            .todoId(1L)
-			.build();
-		//@formatter:on
-
-        given(todoApiService.get(dbParam)).willThrow(NullPointerException.class);
-
-        //@formatter:off
-        mvc.perform(
-            //WHEN(Execution)
-            get("/api/v1/todo/{id}",1L)
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-
-            //THEN(Verification)
-            .andExpect(status().isInternalServerError())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.msg").isNotEmpty())
             ;
@@ -162,12 +132,7 @@ public class TodoApiControllerGetTest {
             .todoId(1L)
 			.build();
 
-		given(todoApiService.get(dbParam)).willReturn(
-            new ResponseEntity<>(
-                new ResData<>(TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build(), "성공했습니다."),
-                HttpStatus.OK
-            )
-        );
+		given(todoRepository.findOne(dbParam.getTodoId())).willReturn(TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build());
 		//@formatter:on
 
         //@formatter:off

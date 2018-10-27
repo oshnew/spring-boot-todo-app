@@ -107,4 +107,25 @@ public class TodoApiController {
 
     }
 
+    /**
+     * 상태값 수정
+     *
+     * @param param
+     * @param result
+     * @return
+     */
+    @PatchMapping("/todo/{taskId}")
+    public ResponseEntity<ResData<TodoEntity>> status(@RequestBody @Valid TodoDTO.ModifyStatus param, BindingResult result) {
+        if (result.hasErrors()) {
+            return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, "<br>")), HttpStatus.BAD_REQUEST);
+        }
+
+        ResponseEntity<ResData<TodoEntity>> preChk = todoApiService.preModifyStatus(param);
+        if (preChk.getStatusCode().is2xxSuccessful() == false) {
+            return preChk;
+        }
+
+        return todoApiService.modifyStatus(param);
+
+    }
 }
