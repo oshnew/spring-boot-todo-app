@@ -84,8 +84,7 @@ public class TodoApiServiceModifyTest {
 
         //THEN(Verification)
         assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertNotNull(todoEntity);
-        assertEquals(dbParam.getTodoId(), todoEntity.getTodoId());
+        assertNull(todoEntity);
     }
 
     /**
