@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.geun.t.app.common.response.ResData;
 import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.dto.TodoDTO;
-import kr.geun.t.app.todo.entity.TodoEntity;
-import kr.geun.t.app.todo.entity.TodoRefEntity;
 import kr.geun.t.app.todo.service.TodoApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -19,13 +17,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
-
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * 수정관련 컨트롤러 테스트
+ *
+ * @author akageun
+ */
 @Slf4j
 @RunWith(SpringRunner.class)
 @WebMvcTest(TodoApiController.class)
