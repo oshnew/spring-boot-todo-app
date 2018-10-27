@@ -18,4 +18,13 @@ public interface TodoRefRepository extends JpaRepository<TodoRefEntity, Long> {
 	 * @param parentTodoId
 	 */
 	void deleteByParentTodoId(long parentTodoId);
+
+	/**
+	 * 자신을 참조한 할일 가져오기
+	 *
+	 * @param todoId
+	 * @return
+	 */
+	List<TodoRefEntity> findByRefTodoId(Long todoId);
+
 }
