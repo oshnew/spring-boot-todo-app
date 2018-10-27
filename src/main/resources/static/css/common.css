@@ -1,0 +1,26 @@
+html, body {
+    font-size: 14px;
+}
+
+a.badge.badge-secondary {
+    color: #FFFFFF;
+}
+
+a.badge.badge-danger {
+    color: #FFFFFF;
+}
+
+a.modify-btn {
+    color: blue !important;
+    text-decoration-color: blue !important;
+    cursor: pointer;
+}
+
+.modal {
+    background-color: rgba(4, 4, 4, 0.5);
+    margin-top: 0px !important;
+}
+
+li.select2-search, li.select2-search input {
+    width: 100% !important;
+}

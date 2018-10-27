@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo Application</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic.min.css"/>
+
+    <link rel="stylesheet" th:href="@{/static/css/common.css}"/>
+
+    <link th:href="@{/favicon.ico}" rel="icon" type="image/x-icon"/>
+    <link th:href="@{/favicon.ico}" rel="shortcut icon" type="image/x-icon"/>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1>TODO APP</h1>
+    <div class="row mt-3">
+        <div class="col-auto">
+            <button type="button" class="btn btn-primary btn-sm" onclick="openAddModal();">New Todo</button>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <!--내용 영역-->
+        <div class="col-12">
+            <!--목록-->
+            <table id="todo_table" class="table table-hover">
+                <colgroup>
+                    <col width="10%"/>
+                    <col width="*"/>
+                    <col width="15%"/>
+                    <col width="15%"/>
+                    <col width="20%"/>
+                </colgroup>
+                <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>할일</th>
+                    <th>작성일시</th>
+                    <th>최종수정일시</th>
+                    <th>완료처리</th>
+                </tr>
+                </thead>
+                <tbody id="todo_table_body">
+                <tr>
+                    <td colspan="5" align="center">등록된 할일이 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12">
+            <ul class="pagination justify-content-center"></ul>
+        </div>
+    </div>
+</div>
+
+<!-- Large modal -->
+<div class="modal fade" id="add_modal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
+     data-backdrop="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create TODO</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><span class="oi" data-glyph="circle-x"></span></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add_frm" onsubmit="return false;" class="form-horizontal" role="form">
+                    <input type="hidden" name="statusCd" value="NOT_YET"/>
+                    <div class="form-group">
+                        <label for="add_task"><span class="oi" data-glyph="task"></span> Task</label>
+                        <input type="text" id="add_task" class="form-control" name="content" placeholder="할일을 입력하세요." value=""/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="add_task_ref"><span class="oi" data-glyph="link-intact"></span> Reference</label>
+                        <select id="add_task_ref" name="refTodos" class="form-control select2-multiple tmpSelect2" multiple>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="add(); return false;">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modify_modal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
+     data-backdrop="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">MODIFY TODO</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><span class="oi" data-glyph="circle-x"></span></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="modify_frm" onsubmit="return false;" class="form-horizontal" role="form">
+                    <input type="hidden" name="todoId"/>
+                    <input type="hidden" name="statusCd"/>
+                    <div class="form-group">
+                        <label for="modify_task"><span class="oi" data-glyph="task"></span> Task</label>
+                        <input type="text" id="modify_task" class="form-control" name="content" placeholder="할일을 입력하세요." value=""/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modify_task_ref"><span class="oi" data-glyph="link-intact"></span> Reference</label>
+                        <select id="modify_task_ref" name="refTodos" class="form-control select2-multiple tmpSelect2" multiple>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="modify(); return false;">MODIFY</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js"></script>
+<script th:src="@{/static/js/common.js}"></script>
+
+<script>
+    $(document).ready(function () {
+        list(1);
+    });
+
+    function openAddModal() {
+        $("#add_frm [name='content']").val('');
+        $("#add_frm [name='refTodos']").val('');
+
+        setSelect2WithStatus("#add_frm");
+
+        CmnUtils.openModal('add_modal');
+    }
+
+    function add() {
+        console.log($("#add_frm").serialize());
+
+        $.ajax({
+            type: "POST",
+            url: "/api/v1/todo",
+            dataType: "json",
+            data: $("#add_frm").serialize(),
+            success: function (rtnData) {
+                alert(rtnData.msg);
+                location.reload();
+            },
+            error: function (e) {
+                alert(e.responseJSON.msg);
+            }
+        });
+    }
+
+    function list(pageNumber) {
+        $.ajax({
+            type: "GET",
+            url: "/api/v1/todo",
+            dataType: "json",
+            data: {
+                page: (pageNumber - 1)
+            },
+            success: function (rtnData) {
+                $("#todo_table #todo_table_body").html('');
+
+                var content = rtnData.data.resultList;
+
+                var tmpHtml = [];
+
+                if (content !== undefined && content.length > 0) {
+                    for (var i in content) {
+                        var tmpData = content[i];
+                        tmpHtml.push('<tr>');
+                        tmpHtml.push('<td><a class="modify-btn" onclick="get(' + tmpData.todoId + ');">' + tmpData.todoId + '</a></td>');
+                        tmpHtml.push('<td><a class="modify-btn" onclick="get(' + tmpData.todoId + ');">' + tmpData.content + '</a>');
+
+                        if (tmpData.todoRefs.length > 0) {
+                            tmpHtml.push('<br/>');
+
+                            for (var i = 0; i < tmpData.todoRefs.length; i++) {
+                                var ref = tmpData.todoRefs[i];
+
+                                console.log(ref);
+
+                                var tmpBadgeColorClass = 'badge-danger';
+                                if (ref.todoRefsInfo.statusCd === 'COMPLETE') {
+                                    tmpBadgeColorClass = 'badge-secondary';
+                                }
+
+                                var tmpBadgeClass = 'badge badge-pill mr-1 ' + tmpBadgeColorClass;
+
+                                tmpHtml.push('<a class="' + tmpBadgeClass +
+                                    '" data-toggle="tooltip" data-html="true"  data-placement="bottom" title="' + ref.todoRefsInfo.content + '">@'
+                                    + ref.refTodoId + '</a>');
+                            }
+                        }
+                        tmpHtml.push('</td>');
+                        tmpHtml.push('<td>' + tmpData.createdAt + '</td><td>' + tmpData.updatedAt + '</td>');
+                        if (tmpData.statusCd === 'COMPLETE') {
+                            tmpHtml.push('<td style="color:red; font-weight: bold">COMPLETE</td>');
+                        } else {
+                            tmpHtml.push('<td><button class="btn btn-info btn-sm" onclick="modifyStatus(' + tmpData.todoId + ')">COMPLETE</button></td>');
+                        }
+
+                        tmpHtml.push('</tr>');
+
+
+                    }
+
+                } else {
+                    tmpHtml.push('<tr><td colspan="5" align="center">등록된 할일이 없습니다.</td></tr>');
+                }
+
+                $("#todo_table #todo_table_body").html(tmpHtml.join(""));
+
+                if (rtnData.data.pagination !== undefined) {
+                    $(".pagination").html(CmnUtils.pagination(rtnData.data.pagination, 'changePage'));
+                }
+
+
+                $('[data-toggle="tooltip"]').tooltip();
+
+            },
+            error: function (e) {
+                alert(e.responseText);
+            }
+        });
+    }
+
+    function get(todoId) {
+        $("#modify_frm [name='content']").val('');
+        $("#modify_frm [name='refTodos']").val('');
+
+        $.ajax({
+            type: "GET",
+            url: "/api/v1/todo/" + todoId,
+            dataType: "json",
+            contentType: 'application/json;',
+            success: function (rtnData) {
+
+                $("#modify_frm [name='todoId']").val(rtnData.data.todoId);
+                $("#modify_frm [name='content']").val(rtnData.data.content);
+                $("#modify_frm [name='statusCd']").val(rtnData.data.statusCd);
+
+
+                if (rtnData.data.todoRefs.length > 0) {
+
+                    for (var i in rtnData.data.todoRefs) {
+                        var tmpRef = rtnData.data.todoRefs[i];
+
+                        $("#modify_frm [name='refTodos']").append("<option value='" + tmpRef.refTodoId +
+                            "' selected>" + tmpRef.todoRefsInfo.content + "</option>");
+                    }
+
+                }
+
+                setSelect2WithStatus("#modify_frm");
+            },
+            error: function (e) {
+                alert(e.responseText);
+            }
+        });
+
+        CmnUtils.openModal('modify_modal');
+
+    }
+
+    function modify() {
+        $.ajax({
+            type: "PUT",
+            url: "/api/v1/todo/" + $("#modify_frm [name='todoId']").val(),
+            dataType: "json",
+            contentType: 'application/json;',
+            data: JSON.stringify({
+                todoId: $("#modify_frm [name='todoId']").val(),
+                content: $("#modify_frm [name='content']").val(),
+                statusCd: $("#modify_frm [name='statusCd']").val(),
+                refTodos: $("#modify_frm [name='refTodos']").val()
+            }),
+            success: function (rtnData) {
+                location.reload();
+            },
+            error: function (e) {
+                alert(e.responseText);
+            }
+        });
+    }
+
+    function modifyStatus(todoId) {
+        $.ajax({
+            type: "PATCH",
+            url: "/api/v1/todo/" + todoId,
+            data: JSON.stringify({todoId: todoId, statusCd: 'COMPLETE'}),
+            dataType: "json",
+            contentType: 'application/json;',
+            success: function (rtnData) {
+                location.reload();
+            },
+            error: function (e) {
+                alert(e.responseJSON.msg);
+            }
+        });
+    }
+
+    function setSelect2WithStatus(frmNm) {
+
+        $(frmNm + ' .tmpSelect2').select2({
+            placeholder: "참조할 할일을 입력해주세요.",
+            theme: "bootstrap",
+            minimumInputLength: 2,
+            delay: 250,
+            ajax: {
+                type: 'GET',
+                url: '/api/v1/todo/search',
+                dataType: "json",
+                contentType: 'application/json;',
+                data: function (params) {
+                    return {
+                        keyword: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data.data, function (item) {
+                            console.log(item);
+                            return {
+                                text: item.content,
+                                id: item.todoId
+                            }
+                        })
+                    };
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
