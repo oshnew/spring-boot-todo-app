@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,39 +36,10 @@ import static org.mockito.BDDMockito.given;
 public class TodoApiServiceListTest {
 
     @Autowired
-    private TodoRepository todoRepository;
-
-    @Autowired
     private TodoApiService todoApiService;
 
     @MockBean
-    private TodoRepository mockTodoRepository;
-
-    /**
-     * 작성일, 최종수정일, 내용 포함여부
-     */
-    @Test
-    public void testSuccessContainValues() {
-        //GIVEN(Preparation)
-        LocalDateTime ldt = LocalDateTime.now();
-        List<TodoEntity> list = new ArrayList<>();
-
-        list.add(TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
-        list.add(TodoEntity.builder().content("빨래").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
-        list.add(TodoEntity.builder().content("청소").statusCd(TodoStatusCd.COMPLETE.name()).createdAt(ldt).updatedAt(ldt).build());
-        list.add(TodoEntity.builder().content("방청소").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
-
-        Pageable pageable = new PageRequest(0, 3);
-        given(mockTodoRepository.findAll(pageable)).willReturn(new PageImpl<>(list));
-
-        //WHEN(Execution)
-        Page<TodoEntity> result = todoRepository.findAll(pageable);
-
-        //THEN(Verification)
-        assertNotNull(result.getContent().get(0).getContent());
-        assertNotNull(result.getContent().get(0).getCreatedAt());
-        assertNotNull(result.getContent().get(0).getUpdatedAt());
-    }
+    private TodoRepository todoRepository;
 
     /**
      * 리스트 조회 성공 테스트
@@ -87,7 +57,7 @@ public class TodoApiServiceListTest {
         list.add(TodoEntity.builder().content("방청소").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
 
         Pageable pageable = new PageRequest(0, 3);
-        given(mockTodoRepository.findAll(pageable)).willReturn(new PageImpl<>(list));
+        given(todoRepository.findAll(pageable)).willReturn(new PageImpl<>(list));
 
         //WHEN(Execution)
         ResponseEntity<ResData<Map<String, Object>>> result = todoApiService.list(pageable);
@@ -107,7 +77,7 @@ public class TodoApiServiceListTest {
     public void testSuccessEmptyList() {
         //GIVEN(Preparation)
         Pageable pageable = new PageRequest(0, 3);
-        given(mockTodoRepository.findAll(pageable)).willReturn(new PageImpl<>(new ArrayList<>()));
+        given(todoRepository.findAll(pageable)).willReturn(new PageImpl<>(new ArrayList<>()));
 
         //WHEN(Execution)
         ResponseEntity<ResData<Map<String, Object>>> result = todoApiService.list(pageable);

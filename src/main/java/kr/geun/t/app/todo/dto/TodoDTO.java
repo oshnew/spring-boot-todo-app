@@ -18,6 +18,18 @@ import javax.validation.constraints.Size;
 public class TodoDTO {
 
     /**
+     * 리스트
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class List {
+        @Min(0)
+        private int pageNumber;
+    }
+
+    /**
      * 추가
      */
     @Data
