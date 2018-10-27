@@ -1,5 +1,6 @@
 package kr.geun.t.app.todo.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,6 +52,7 @@ public class TodoEntity {
 	/**
 	 * 생성일시
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@CreationTimestamp
 	@Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime createdAt;
@@ -58,6 +60,7 @@ public class TodoEntity {
 	/**
 	 * 수정일시
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@UpdateTimestamp
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
