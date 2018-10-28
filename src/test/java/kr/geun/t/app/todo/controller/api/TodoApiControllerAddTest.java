@@ -54,7 +54,6 @@ public class TodoApiControllerAddTest {
         mvc.perform(
             //WHEN(Execution)
             post("/api/v1/todo")
-                .param("content", "집안일")
                 .param("refTodos", "1","2")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 

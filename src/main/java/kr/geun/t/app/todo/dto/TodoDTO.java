@@ -41,7 +41,7 @@ public class TodoDTO {
         @Size(min = 2, max = 1024)
         private String content;
 
-        @TodoStatusCdValid
+//        @TodoStatusCdValid
         private String statusCd;
 
         private Long[] refTodos;
@@ -76,7 +76,7 @@ public class TodoDTO {
         @Size(min = 2, max = 1024)
         private String content;
 
-        @TodoStatusCdValid
+//        @TodoStatusCdValid
         private String statusCd;
 
         private Long[] refTodos;
