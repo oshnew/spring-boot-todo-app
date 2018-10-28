@@ -123,5 +123,5 @@ public String toString() {
       
        
 ## TODO 
-* [] QueryDSL 을 사용하여 dynamic query 기능 추가.
-* [] 할일에 대한 상태값 추가. (진행중 등)
+* [ ] QueryDSL 을 사용하여 dynamic query 기능 추가.
+* [ ] 할일에 대한 상태값 추가. (진행중 등)
