@@ -62,9 +62,9 @@ public class TodoApiControllerErrorTest {
             .statusCd(TodoStatusCd.NOT_YET.name())
             .refTodos(new Long[] {1L, 2L})
 			.build();
-		//@formatter:on
 
-		given(todoApiService.add(dbParam)).willThrow(NullPointerException.class);
+		//@formatter:on
+		given(todoApiService.add(dbParam)).willThrow(new RuntimeException("mock exception"));
 
 		//@formatter:off
         mvc.perform(
@@ -97,7 +97,7 @@ public class TodoApiControllerErrorTest {
 			.build();
 		//@formatter:on
 
-		given(todoApiService.get(dbParam)).willThrow(NullPointerException.class);
+		given(todoApiService.get(dbParam)).willThrow(new RuntimeException("mock exception"));
 
 		//@formatter:off
         mvc.perform(
@@ -131,7 +131,7 @@ public class TodoApiControllerErrorTest {
             .build();
 		//@formatter:on
 
-		given(todoApiService.preModify(dbParam)).willThrow(NullPointerException.class);
+		given(todoApiService.preModify(dbParam)).willThrow(new RuntimeException("mock exception"));
 
 		//@formatter:off
         mvc.perform(
@@ -158,7 +158,7 @@ public class TodoApiControllerErrorTest {
 		//GIVEN(Preparation)
 		Sort sort = new Sort(Sort.Direction.DESC, "todoId");
 		Pageable pageable = new PageRequest(0, 3, sort);
-		given(todoApiService.list(pageable)).willThrow(NullPointerException.class);
+		given(todoApiService.list(pageable)).willThrow(new RuntimeException("mock exception"));
 
 		//@formatter:off
         mvc.perform(
