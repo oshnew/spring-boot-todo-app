@@ -20,7 +20,7 @@ public class CmnUtils {
 	 * @param seperator
 	 * @return
 	 */
-	public static String getErrMsg(BindingResult result, String seperator) {
+	public static String getErrMsg(BindingResult result, char seperator) {
 		if (result.hasErrors() == false) { //오사용으로 인한 방어처리
 			return "";
 		}

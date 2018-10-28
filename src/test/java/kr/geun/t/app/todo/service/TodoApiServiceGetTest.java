@@ -44,14 +44,14 @@ public class TodoApiServiceGetTest {
     public void testFailGetTodo() {
         //GIVEN(Preparation)
         //@formatter:off
-		TodoDTO.Get dbParam = TodoDTO.Get.builder()
+		TodoDTO.Get mockParam = TodoDTO.Get.builder()
             .todoId(1L)
 			.build();
 		//@formatter:on
-        given(mockTodoRepository.findOne(dbParam.getTodoId())).willReturn(null);
+        given(mockTodoRepository.findOne(mockParam.getTodoId())).willReturn(null);
 
         //WHEN(Execution)
-        ResponseEntity<ResData<TodoEntity>> result = todoApiService.get(dbParam);
+        ResponseEntity<ResData<TodoEntity>> result = todoApiService.get(mockParam);
         ResData<TodoEntity> resultBody = result.getBody();
 
         //THEN(Verification)
@@ -66,16 +66,16 @@ public class TodoApiServiceGetTest {
     public void testSuccessGetOnlyTodo() {
         //GIVEN(Preparation)
         //@formatter:off
-		TodoDTO.Get dbParam = TodoDTO.Get.builder()
+		TodoDTO.Get mockParam = TodoDTO.Get.builder()
             .todoId(1L)
 			.build();
 		//@formatter:on
         TodoEntity mockTodoEntity = TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build();
 
-        given(mockTodoRepository.findOne(dbParam.getTodoId())).willReturn(mockTodoEntity);
+        given(mockTodoRepository.findOne(mockParam.getTodoId())).willReturn(mockTodoEntity);
 
         //WHEN(Execution)
-        ResponseEntity<ResData<TodoEntity>> result = todoApiService.get(dbParam);
+        ResponseEntity<ResData<TodoEntity>> result = todoApiService.get(mockParam);
         ResData<TodoEntity> resultBody = result.getBody();
         TodoEntity todoEntity = resultBody.getData();
 
@@ -92,22 +92,22 @@ public class TodoApiServiceGetTest {
     public void testSuccessGetWithTodoRef() {
         //GIVEN(Preparation)
         //@formatter:off
-		TodoDTO.Get dbParam = TodoDTO.Get.builder()
+		TodoDTO.Get mockParam = TodoDTO.Get.builder()
             .todoId(1L)
 			.build();
 
 		TodoEntity mockTodoEntity = TodoEntity.builder()
             .content("집안일")
             .statusCd(TodoStatusCd.NOT_YET.name())
-                .todoRefs(Arrays.asList(TodoRefEntity.builder().parentTodoId(dbParam.getTodoId()).refTodoId(2L).build()))
+                .todoRefs(Arrays.asList(TodoRefEntity.builder().parentTodoId(mockParam.getTodoId()).refTodoId(2L).build()))
             .build();
 
 		//@formatter:on
 
-        given(mockTodoRepository.findOne(dbParam.getTodoId())).willReturn(mockTodoEntity);
+        given(mockTodoRepository.findOne(mockParam.getTodoId())).willReturn(mockTodoEntity);
 
         //WHEN(Execution)
-        ResponseEntity<ResData<TodoEntity>> result = todoApiService.get(dbParam);
+        ResponseEntity<ResData<TodoEntity>> result = todoApiService.get(mockParam);
         ResData<TodoEntity> resultBody = result.getBody();
         TodoEntity todoEntity = resultBody.getData();
 

@@ -98,11 +98,11 @@ public class TodoApiControllerGetTest {
 
         //GIVEN(Preparation)
         //@formatter:off
-		TodoDTO.Get dbParam = TodoDTO.Get.builder()
+		TodoDTO.Get mockParam = TodoDTO.Get.builder()
             .todoId(1L)
 			.build();
 
-		given(todoRepository.findOne(dbParam.getTodoId())).willReturn(null);
+		given(todoRepository.findOne(mockParam.getTodoId())).willReturn(null);
 		//@formatter:on
 
         //@formatter:off
@@ -128,11 +128,11 @@ public class TodoApiControllerGetTest {
     public void testSuccessGet() throws Exception {
         //GIVEN(Preparation)
         //@formatter:off
-		TodoDTO.Get dbParam = TodoDTO.Get.builder()
+		TodoDTO.Get mockParam = TodoDTO.Get.builder()
             .todoId(1L)
 			.build();
 
-		given(todoRepository.findOne(dbParam.getTodoId())).willReturn(TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build());
+		given(todoRepository.findOne(mockParam.getTodoId())).willReturn(TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build());
 		//@formatter:on
 
         //@formatter:off

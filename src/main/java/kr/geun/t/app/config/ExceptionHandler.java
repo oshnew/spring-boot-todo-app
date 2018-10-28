@@ -25,7 +25,6 @@ public class ExceptionHandler {
      */
     @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
     public ResponseEntity<ResData> handleException(Exception e) {
-        log.error(e.getMessage(), e);
         return new ResponseEntity<>(new ResData<>("시스템에러가 발생했습니다."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

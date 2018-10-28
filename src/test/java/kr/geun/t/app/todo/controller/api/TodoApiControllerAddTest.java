@@ -77,20 +77,20 @@ public class TodoApiControllerAddTest {
         LocalDateTime ldt = LocalDateTime.now();
 
         //@formatter:off
-        TodoDTO.Add dbParam = TodoDTO.Add.builder()
+        TodoDTO.Add mockParam = TodoDTO.Add.builder()
 			.content("집안일")
 			.statusCd(TodoStatusCd.NOT_YET.name())
 			.build();
 
-        TodoEntity mockParam = TodoEntity.builder()
-            .content(dbParam.getContent())
-            .statusCd(dbParam.getStatusCd())
+        TodoEntity mockSaveParam = TodoEntity.builder()
+            .content(mockParam.getContent())
+            .statusCd(mockParam.getStatusCd())
             .build();
 
         TodoEntity mockTodoEntity = TodoEntity.builder()
             .todoId(1L)
-            .content(mockParam.getContent())
-            .statusCd(mockParam.getStatusCd())
+            .content(mockSaveParam.getContent())
+            .statusCd(mockSaveParam.getStatusCd())
             .createdAt(ldt)
             .updatedAt(ldt)
                 .build();
@@ -98,23 +98,23 @@ public class TodoApiControllerAddTest {
 
 		//@formatter:on
 
-        given(todoRepository.save(mockParam)).willReturn(mockTodoEntity);
+        given(todoRepository.save(mockSaveParam)).willReturn(mockTodoEntity);
         given(todoRepository.findOne(mockTodoEntity.getTodoId())).willReturn(mockTodoEntity);
 
         //@formatter:off
         mvc.perform(
             //WHEN(Execution)
             post("/api/v1/todo")
-                .param("content", dbParam.getContent())
-                .param("statusCd", dbParam.getStatusCd())
+                .param("content", mockParam.getContent())
+                .param("statusCd", mockParam.getStatusCd())
 
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 
             //THEN(Verification)
             .andExpect(status().isCreated())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.data.content").value(dbParam.getContent()))
-            .andExpect(jsonPath("$.data.statusCd").value(dbParam.getStatusCd()))
+            .andExpect(jsonPath("$.data.content").value(mockParam.getContent()))
+            .andExpect(jsonPath("$.data.statusCd").value(mockParam.getStatusCd()))
             .andExpect(jsonPath("$.data.todoRefs").isEmpty())
             ;
         //@formatter:on

@@ -1,5 +1,6 @@
 package kr.geun.t.app.todo.controller.api;
 
+import kr.geun.t.app.common.constants.CmnConst;
 import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.entity.TodoEntity;
 import kr.geun.t.app.todo.repository.TodoRefRepository;
@@ -46,8 +47,17 @@ public class TodoApiControllerListTest {
     @MockBean
     private TodoRefRepository todoRefRepository;
 
+    /**
+     * 성공 테스트
+     *
+     * @throws Exception
+     */
     @Test
     public void testSuccessList() throws Exception {
+
+        final int pageNumber = 0;
+        Sort sort = new Sort(Sort.Direction.DESC, CmnConst.TODO_ID_STR);
+        Pageable pageable = new PageRequest(pageNumber, CmnConst.RECORD_PER_COUNT, sort); //TODO : 상수값으로 변환해야함.
 
         LocalDateTime ldt = LocalDateTime.now();
         List<TodoEntity> list = new ArrayList<>();
@@ -56,9 +66,6 @@ public class TodoApiControllerListTest {
         list.add(TodoEntity.builder().content("빨래").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
         list.add(TodoEntity.builder().content("청소").statusCd(TodoStatusCd.COMPLETE.name()).createdAt(ldt).updatedAt(ldt).build());
         list.add(TodoEntity.builder().content("방청소").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
-
-        Sort sort = new Sort(Sort.Direction.DESC, "todoId");
-        Pageable pageable = new PageRequest(0, 10, sort); //TODO : 상수값으로 변환해야함.
 
         given(todoRepository.findAll(pageable)).willReturn(new PageImpl<>(list));
 

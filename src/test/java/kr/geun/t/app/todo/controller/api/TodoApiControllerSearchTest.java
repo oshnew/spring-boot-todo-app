@@ -49,7 +49,7 @@ public class TodoApiControllerSearchTest {
     public void testFailSearch() throws Exception {
         //GIVEN(Preparation)
         //@formatter:off
-		TodoDTO.Search dbParam = TodoDTO.Search.builder()
+		TodoDTO.Search mockParam = TodoDTO.Search.builder()
             .keyword("청")
 			.build();
 
@@ -59,7 +59,7 @@ public class TodoApiControllerSearchTest {
         mvc.perform(
             //WHEN(Execution)
             get("/api/v1/todo/search")
-                .param("keyword",dbParam.getKeyword())
+                .param("keyword",mockParam.getKeyword())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 
             //THEN(Verification)
@@ -78,7 +78,7 @@ public class TodoApiControllerSearchTest {
     public void testSuccessSearch() throws Exception {
         //GIVEN(Preparation)
         //@formatter:off
-		TodoDTO.Search dbParam = TodoDTO.Search.builder()
+		TodoDTO.Search mockParam = TodoDTO.Search.builder()
             .keyword("청소")
 			.build();
 
@@ -89,13 +89,13 @@ public class TodoApiControllerSearchTest {
         list.add(TodoEntity.builder().content("청소").statusCd(TodoStatusCd.COMPLETE.name()).build());
         list.add(TodoEntity.builder().content("방청소").statusCd(TodoStatusCd.NOT_YET.name()).build());
 
-        given(todoRepository.findByContentContaining(dbParam.getKeyword())).willReturn(list);
+        given(todoRepository.findByContentContaining(mockParam.getKeyword())).willReturn(list);
 
         //@formatter:off
         mvc.perform(
             //WHEN(Execution)
             get("/api/v1/todo/search")
-                .param("keyword",dbParam.getKeyword())
+                .param("keyword",mockParam.getKeyword())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 
             //THEN(Verification)

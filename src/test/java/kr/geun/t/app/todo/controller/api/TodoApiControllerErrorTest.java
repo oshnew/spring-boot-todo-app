@@ -57,21 +57,21 @@ public class TodoApiControllerErrorTest {
 	public void testFailSystemErrAdd() throws Exception {
 		//GIVEN(Preparation)
 		//@formatter:off
-		TodoDTO.Add dbParam = TodoDTO.Add.builder()
+		TodoDTO.Add mockParam = TodoDTO.Add.builder()
             .content("집안일")
             .statusCd(TodoStatusCd.NOT_YET.name())
             .refTodos(new Long[] {1L, 2L})
 			.build();
 
 		//@formatter:on
-		given(todoApiService.add(dbParam)).willThrow(new RuntimeException("mock exception"));
+		given(todoApiService.add(mockParam)).willThrow(new RuntimeException("mock exception"));
 
 		//@formatter:off
         mvc.perform(
             //WHEN(Execution)
             post("/api/v1/todo")
-                .param("content", dbParam.getContent())
-                .param("statusCd", dbParam.getStatusCd())
+                .param("content", mockParam.getContent())
+                .param("statusCd", mockParam.getStatusCd())
                 .param("refTodos", "1","2")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 
@@ -92,12 +92,12 @@ public class TodoApiControllerErrorTest {
 	public void testFailSystemErrGet() throws Exception {
 		//GIVEN(Preparation)
 		//@formatter:off
-		TodoDTO.Get dbParam = TodoDTO.Get.builder()
+		TodoDTO.Get mockParam = TodoDTO.Get.builder()
             .todoId(1L)
 			.build();
 		//@formatter:on
 
-		given(todoApiService.get(dbParam)).willThrow(new RuntimeException("mock exception"));
+		given(todoApiService.get(mockParam)).willThrow(new RuntimeException("mock exception"));
 
 		//@formatter:off
         mvc.perform(
@@ -123,7 +123,7 @@ public class TodoApiControllerErrorTest {
 		ObjectMapper OM = new ObjectMapper();
 		//GIVEN(Preparation)
 		//@formatter:off
-		TodoDTO.Modify dbParam = TodoDTO.Modify.builder()
+		TodoDTO.Modify mockParam = TodoDTO.Modify.builder()
             .todoId(1L)
             .content("집안일")
             .statusCd(TodoStatusCd.NOT_YET.name())
@@ -131,14 +131,14 @@ public class TodoApiControllerErrorTest {
             .build();
 		//@formatter:on
 
-		given(todoApiService.preModify(dbParam)).willThrow(new RuntimeException("mock exception"));
+		given(todoApiService.preModify(mockParam)).willThrow(new RuntimeException("mock exception"));
 
 		//@formatter:off
         mvc.perform(
             //WHEN(Execution)
-            put("/api/v1/todo/{id}", dbParam.getTodoId())
+            put("/api/v1/todo/{id}", mockParam.getTodoId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(OM.writeValueAsString(dbParam)))
+                .content(OM.writeValueAsString(mockParam)))
 
             //THEN(Verification)
             .andExpect(status().isInternalServerError())

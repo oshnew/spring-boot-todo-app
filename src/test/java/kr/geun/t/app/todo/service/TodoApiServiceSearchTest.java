@@ -42,21 +42,21 @@ public class TodoApiServiceSearchTest {
     public void testSuccessList() {
         //GIVEN(Preparation)
         //@formatter:off
-		TodoDTO.Search dbParam = TodoDTO.Search.builder()
+		TodoDTO.Search mockParam = TodoDTO.Search.builder()
             .keyword("청소")
 			.build();
 
 		//@formatter:on
 
-        List<TodoEntity> list = new ArrayList<>();
+        List<TodoEntity> mockList = new ArrayList<>();
 
-        list.add(TodoEntity.builder().content("청소").statusCd(TodoStatusCd.COMPLETE.name()).build());
-        list.add(TodoEntity.builder().content("방청소").statusCd(TodoStatusCd.NOT_YET.name()).build());
+        mockList.add(TodoEntity.builder().content("청소").statusCd(TodoStatusCd.COMPLETE.name()).build());
+        mockList.add(TodoEntity.builder().content("방청소").statusCd(TodoStatusCd.NOT_YET.name()).build());
 
-        given(todoRepository.findByContentContaining(dbParam.getKeyword())).willReturn(list);
+        given(todoRepository.findByContentContaining(mockParam.getKeyword())).willReturn(mockList);
 
         //WHEN(Execution)
-        ResponseEntity<ResData<List<TodoEntity>>> result = todoApiService.search(dbParam);
+        ResponseEntity<ResData<List<TodoEntity>>> result = todoApiService.search(mockParam);
         ResData<List<TodoEntity>> resultBody = result.getBody();
         List<TodoEntity> todoList = resultBody.getData();
 

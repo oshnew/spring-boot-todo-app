@@ -55,13 +55,13 @@ public class TodoApiControllerModifyStatusTest {
 	public void testFailParameterErr() throws Exception {
 		//GIVEN(Preparation)
 		//@formatter:off
-        TodoDTO.ModifyStatus dbParam = TodoDTO.ModifyStatus.builder()
+        TodoDTO.ModifyStatus mockParam = TodoDTO.ModifyStatus.builder()
             .todoId(1L)
             .build();
 
         mvc.perform(
             //WHEN(Execution)
-            patch("/api/v1/todo/{id}", dbParam.getTodoId())
+            patch("/api/v1/todo/{id}", mockParam.getTodoId())
                 .param("statusCd", "TEST")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             //THEN(Verification)
@@ -82,7 +82,7 @@ public class TodoApiControllerModifyStatusTest {
 	public void testSuccessModifyStatus() throws Exception {
 		//GIVEN(Preparation)
 		//@formatter:off
-		TodoDTO.Modify dbParam = TodoDTO.Modify.builder()
+		TodoDTO.Modify mockParam = TodoDTO.Modify.builder()
             .todoId(1L)
             .statusCd(TodoStatusCd.COMPLETE.name())
             .build();
@@ -90,19 +90,19 @@ public class TodoApiControllerModifyStatusTest {
 		//@formatter:on
 
 		TodoEntity preDataEntity = TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build();
-		TodoEntity inputDataEntity = TodoEntity.builder().todoId(dbParam.getTodoId()).content(preDataEntity.getContent()).statusCd(
-			dbParam.getStatusCd()).build();
+		TodoEntity inputDataEntity = TodoEntity.builder().todoId(mockParam.getTodoId()).content(preDataEntity.getContent()).statusCd(
+			mockParam.getStatusCd()).build();
 
-		given(todoRepository.findOne(dbParam.getTodoId())).willReturn(preDataEntity);
+		given(todoRepository.findOne(mockParam.getTodoId())).willReturn(preDataEntity);
 		given(todoRepository.save(inputDataEntity)).willReturn(inputDataEntity);
 
 		//@formatter:off
         mvc.perform(
             //WHEN(Execution)
-            patch("/api/v1/todo/{id}", dbParam.getTodoId())
-                .param("statusCd", dbParam.getStatusCd())
+            patch("/api/v1/todo/{id}", mockParam.getTodoId())
+                .param("statusCd", mockParam.getStatusCd())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(OM.writeValueAsString(dbParam)))
+                .content(OM.writeValueAsString(mockParam)))
 
             //THEN(Verification)
             .andExpect(status().isOk())
@@ -122,7 +122,7 @@ public class TodoApiControllerModifyStatusTest {
 	public void testFailModifyWithRef() throws Exception {
 		//GIVEN(Preparation)
 		//@formatter:off
-		TodoDTO.Modify dbParam = TodoDTO.Modify.builder()
+		TodoDTO.Modify mockParam = TodoDTO.Modify.builder()
             .todoId(1L)
             .statusCd(TodoStatusCd.COMPLETE.name())
             .refTodos(new Long[]{2L, 3L})
@@ -131,28 +131,28 @@ public class TodoApiControllerModifyStatusTest {
 		//@formatter:on
 
 		List<TodoRefEntity> refEntities = new ArrayList<>();
-		for (Long refTodo : dbParam.getRefTodos()) {
+		for (Long refTodo : mockParam.getRefTodos()) {
 			TodoStatusCd tmpStatus = TodoStatusCd.NOT_YET;
 			if (refTodo == 2L) {
 				tmpStatus = TodoStatusCd.COMPLETE;
 			}
 
-			refEntities.add(TodoRefEntity.builder().parentTodoId(dbParam.getTodoId()).refTodoId(refTodo).todoRefsInfo(
+			refEntities.add(TodoRefEntity.builder().parentTodoId(mockParam.getTodoId()).refTodoId(refTodo).todoRefsInfo(
 				TodoEntity.builder().statusCd(tmpStatus.name()).build()).build());
 		}
 
 		TodoEntity preDataEntity = TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).todoRefs(refEntities).build();
-		TodoEntity inputDataEntity = TodoEntity.builder().todoId(dbParam.getTodoId()).content(preDataEntity.getContent()).statusCd(
-			dbParam.getStatusCd()).build();
+		TodoEntity inputDataEntity = TodoEntity.builder().todoId(mockParam.getTodoId()).content(preDataEntity.getContent()).statusCd(
+			mockParam.getStatusCd()).build();
 
-		given(todoRepository.findOne(dbParam.getTodoId())).willReturn(preDataEntity);
+		given(todoRepository.findOne(mockParam.getTodoId())).willReturn(preDataEntity);
 		given(todoRepository.save(inputDataEntity)).willReturn(inputDataEntity);
 
 		//@formatter:off
         mvc.perform(
             //WHEN(Execution)
-            patch("/api/v1/todo/{id}", dbParam.getTodoId())
-                .param("statusCd", dbParam.getStatusCd())
+            patch("/api/v1/todo/{id}", mockParam.getTodoId())
+                .param("statusCd", mockParam.getStatusCd())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             //THEN(Verification)
             .andExpect(status().isBadRequest())
@@ -172,7 +172,7 @@ public class TodoApiControllerModifyStatusTest {
 	public void testSuccessModifyWithRef() throws Exception {
 		//GIVEN(Preparation)
 		//@formatter:off
-		TodoDTO.Modify dbParam = TodoDTO.Modify.builder()
+		TodoDTO.Modify mockParam = TodoDTO.Modify.builder()
             .todoId(1L)
             .statusCd(TodoStatusCd.COMPLETE.name())
             .refTodos(new Long[]{2L, 3L})
@@ -181,23 +181,23 @@ public class TodoApiControllerModifyStatusTest {
 		//@formatter:on
 
 		List<TodoRefEntity> refEntities = new ArrayList<>();
-		for (Long refTodo : dbParam.getRefTodos()) {
-			refEntities.add(TodoRefEntity.builder().parentTodoId(dbParam.getTodoId()).refTodoId(refTodo).todoRefsInfo(
+		for (Long refTodo : mockParam.getRefTodos()) {
+			refEntities.add(TodoRefEntity.builder().parentTodoId(mockParam.getTodoId()).refTodoId(refTodo).todoRefsInfo(
 				TodoEntity.builder().statusCd(TodoStatusCd.COMPLETE.name()).build()).build());
 		}
 
 		TodoEntity preDataEntity = TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).todoRefs(refEntities).build();
-		TodoEntity inputDataEntity = TodoEntity.builder().todoId(dbParam.getTodoId()).content(preDataEntity.getContent()).statusCd(
-			dbParam.getStatusCd()).build();
+		TodoEntity inputDataEntity = TodoEntity.builder().todoId(mockParam.getTodoId()).content(preDataEntity.getContent()).statusCd(
+			mockParam.getStatusCd()).build();
 
-		given(todoRepository.findOne(dbParam.getTodoId())).willReturn(preDataEntity);
+		given(todoRepository.findOne(mockParam.getTodoId())).willReturn(preDataEntity);
 		given(todoRepository.save(inputDataEntity)).willReturn(inputDataEntity);
 
 		//@formatter:off
         mvc.perform(
             //WHEN(Execution)
-            patch("/api/v1/todo/{id}", dbParam.getTodoId())
-                .param("statusCd", dbParam.getStatusCd())
+            patch("/api/v1/todo/{id}", mockParam.getTodoId())
+                .param("statusCd", mockParam.getStatusCd())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             //THEN(Verification)
             .andExpect(status().isBadRequest())
