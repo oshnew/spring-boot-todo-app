@@ -45,14 +45,14 @@ public class TodoStatusCdValidatorTest {
     public void testFailTodoStatusInvalidChk() {
         //GIVEN(Preparation)
         //@formatter:off
-		TodoDTO.Add invalidStringParam = TodoDTO.Add.builder()
+		TodoDTO.ModifyStatus invalidStringParam = TodoDTO.ModifyStatus.builder()
 			.content("테스트")
 			.statusCd("PROGRESSING")
 			.build();
 		//@formatter:on
 
         //WHEN(Execution)
-        Set<ConstraintViolation<TodoDTO.Add>> violations = validator.validate(invalidStringParam);
+        Set<ConstraintViolation<TodoDTO.ModifyStatus>> violations = validator.validate(invalidStringParam);
 
         //THEN(Verification)
         assertFalse(violations.isEmpty());
@@ -66,26 +66,26 @@ public class TodoStatusCdValidatorTest {
     public void testFailTodoStatusBlank() {
         //GIVEN(Preparation)
         //@formatter:off
-		TodoDTO.Add nullParam = TodoDTO.Add.builder()
+		TodoDTO.ModifyStatus nullParam = TodoDTO.ModifyStatus.builder()
 			.content("테스트")
 			.statusCd(null) //NULL
 			.build();
 
-		TodoDTO.Add blankParam = TodoDTO.Add.builder()
+		TodoDTO.ModifyStatus blankParam = TodoDTO.ModifyStatus.builder()
 			.content("테스트")
 			.statusCd("") //BLANK
 			.build();
 
-		TodoDTO.Add whiteSpaceParam = TodoDTO.Add.builder()
+		TodoDTO.ModifyStatus whiteSpaceParam = TodoDTO.ModifyStatus.builder()
 			.content("테스트")
 			.statusCd(" ") //WHITE SPACE
 			.build();
 		//@formatter:on
 
         //WHEN(Execution)
-        Set<ConstraintViolation<TodoDTO.Add>> nullValid = validator.validate(nullParam);
-        Set<ConstraintViolation<TodoDTO.Add>> blankValid = validator.validate(blankParam);
-        Set<ConstraintViolation<TodoDTO.Add>> whiteSpaceValid = validator.validate(whiteSpaceParam);
+        Set<ConstraintViolation<TodoDTO.ModifyStatus>> nullValid = validator.validate(nullParam);
+        Set<ConstraintViolation<TodoDTO.ModifyStatus>> blankValid = validator.validate(blankParam);
+        Set<ConstraintViolation<TodoDTO.ModifyStatus>> whiteSpaceValid = validator.validate(whiteSpaceParam);
 
         //THEN(Verification)
         assertFalse(nullValid.isEmpty());
@@ -105,14 +105,14 @@ public class TodoStatusCdValidatorTest {
     public void testSuccessValid() {
         //GIVEN(Preparation)
         //@formatter:off
-		TodoDTO.Add successParam = TodoDTO.Add.builder()
+		TodoDTO.ModifyStatus successParam = TodoDTO.ModifyStatus.builder()
 			.content("테스트")
 			.statusCd(TodoStatusCd.NOT_YET.name())
 			.build();
 		//@formatter:on
 
         //WHEN(Execution)
-        Set<ConstraintViolation<TodoDTO.Add>> successValid = validator.validate(successParam);
+        Set<ConstraintViolation<TodoDTO.ModifyStatus>> successValid = validator.validate(successParam);
 
         //THEN(Verification)
         assertTrue(successValid.isEmpty());

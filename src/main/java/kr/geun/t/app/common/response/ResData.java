@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
  * @author akageun
  */
 
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

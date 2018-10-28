@@ -79,7 +79,7 @@ public class TodoApiServiceImpl implements TodoApiService {
     public ResponseEntity<ResData<TodoEntity>> get(TodoDTO.Get param) {
         TodoEntity dbInfo = todoRepository.findOne(param.getTodoId());
         if (dbInfo == null) {
-            return new ResponseEntity<>(new ResData<>(null, "데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ResData<>( "데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(new ResData<>(dbInfo, "성공했습니다."), HttpStatus.OK);
@@ -98,7 +98,7 @@ public class TodoApiServiceImpl implements TodoApiService {
         TodoEntity dbParam = TodoEntity
             .builder()
                 .content(param.getContent())
-                .statusCd(param.getStatusCd())
+                .statusCd(TodoStatusCd.NOT_YET.name())
             .build();
         //@formatter:on
 
@@ -121,8 +121,10 @@ public class TodoApiServiceImpl implements TodoApiService {
     public ResponseEntity<ResData<TodoEntity>> preModify(TodoDTO.Modify param) {
         TodoEntity dbInfo = todoRepository.findOne(param.getTodoId());
         if (dbInfo == null) {
-            return new ResponseEntity<>(new ResData<>(null, "데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ResData<>("데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
         }
+
+        param.setStatusCd(dbInfo.getStatusCd());
 
         //TODO : 참조 등록시 본인 등록 못하도록 방어로직 추가 필요
 
@@ -216,6 +218,7 @@ public class TodoApiServiceImpl implements TodoApiService {
      * @param param
      * @return
      */
+    @Transactional
     @Override
     public ResponseEntity<ResData<TodoEntity>> modifyStatus(TodoDTO.ModifyStatus param) {
 
