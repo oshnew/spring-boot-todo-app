@@ -4,6 +4,7 @@ import kr.geun.t.app.common.response.ResData;
 import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.dto.TodoDTO;
 import kr.geun.t.app.todo.entity.TodoEntity;
+import kr.geun.t.app.todo.entity.TodoRefEntity;
 import kr.geun.t.app.todo.repository.TodoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -14,6 +15,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
@@ -57,6 +61,48 @@ public class TodoApiServiceModifyTest {
         //THEN(Verification)
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
         assertNull(resultBody.getData());
+    }
+
+    /**
+     * 자기 자신을 참조 할 수 없는 기능 테스트
+     */
+    @Test
+    public void testFailModifySelfRef() {
+        //GIVEN(Preparation)
+
+        //@formatter:off
+        TodoEntity mockParam = TodoEntity.builder()
+            .todoId(1L)
+            .content("빨래")
+            .statusCd(TodoStatusCd.NOT_YET.name())
+            .build();
+
+        TodoEntity mockTodoEntity = TodoEntity.builder()
+            .todoId(1L)
+            .content(mockParam.getContent())
+            .statusCd(mockParam.getStatusCd())
+                .build();
+
+		TodoDTO.Modify dbParam = TodoDTO.Modify.builder()
+            .todoId(mockParam.getTodoId())
+			.content(mockParam.getContent())
+			.statusCd(mockParam.getStatusCd())
+            .refTodos(new Long[]{mockParam.getTodoId()})
+			.build();
+
+		//@formatter:on
+
+        given(mockTodoRepository.findOne(mockParam.getTodoId())).willReturn(mockTodoEntity);
+
+        //WHEN(Execution)
+        ResponseEntity<ResData<TodoEntity>> result = todoApiService.preModify(dbParam);
+        ResData<TodoEntity> resultBody = result.getBody();
+        TodoEntity todoEntity = resultBody.getData();
+
+        //THEN(Verification)
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+        assertNull(todoEntity);
+
     }
 
     /**

@@ -19,10 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 할일 관련 API 서비스
@@ -79,7 +76,7 @@ public class TodoApiServiceImpl implements TodoApiService {
     public ResponseEntity<ResData<TodoEntity>> get(TodoDTO.Get param) {
         TodoEntity dbInfo = todoRepository.findOne(param.getTodoId());
         if (dbInfo == null) {
-            return new ResponseEntity<>(new ResData<>( "데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ResData<>("데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(new ResData<>(dbInfo, "성공했습니다."), HttpStatus.OK);
@@ -126,7 +123,13 @@ public class TodoApiServiceImpl implements TodoApiService {
 
         param.setStatusCd(dbInfo.getStatusCd());
 
-        //TODO : 참조 등록시 본인 등록 못하도록 방어로직 추가 필요
+        if (param.getRefTodos() != null && param.getRefTodos().length > 0) { //참조걸린 할일들
+            List<Long> tt = Arrays.asList(param.getRefTodos());
+
+            if (tt.contains(dbInfo.getTodoId())) {
+                return new ResponseEntity<>(new ResData<>("자기 자신을 참조할 수 없습니다."), HttpStatus.BAD_REQUEST);
+            }
+        }
 
         return new ResponseEntity<>(new ResData<>("성공했습니다."), HttpStatus.OK);
     }
