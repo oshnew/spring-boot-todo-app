@@ -1,3 +1,6 @@
-POST http://localhost:9999/api/v1/todo?statusCd=NOT_YET&content=asdfasdfasd
+POST http://localhost:9999/api/v1/todo
+content-type: application/x-www-form-urlencoded
+
+content=TEST&statusCd=NOT_YET&refTodos=1%2C2%2C3%2C4
 
 ###
