@@ -7,6 +7,8 @@
 
 이 프로젝트는 Spring Boot로 만들어진 Todo Application 입니다.
 
+![SAMPLE_SCREENSHOT](./docs/sample_ss_01.png)
+
 ## 사용기술
 - Jdk 1.8
 - Maven 3
