@@ -5,4 +5,8 @@ branches:
   only:
   - master
 
-script: mvn clean install
+cache:
+  directories:
+  - $HOME/.m2
+
+script: ./mvnw clean install
