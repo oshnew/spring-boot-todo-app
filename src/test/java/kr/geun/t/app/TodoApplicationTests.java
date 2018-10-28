@@ -10,6 +10,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class TodoApplicationTests {
 	@Test
 	public void contextLoads() {
+		TodoApplication.main(new String[]{
+			"--server.port=18080"
+			// Override any other environment properties according to your needs
+		});
 	}
 
 }
