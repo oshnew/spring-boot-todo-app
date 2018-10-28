@@ -5,7 +5,7 @@
 
     <groupId>kr.geun.t</groupId>
     <artifactId>todo-app</artifactId>
-    <version>0.0.1</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
 
     <name>todo-app</name>
@@ -114,10 +114,9 @@
     </build>
 
 
-
     <profiles>
         <profile>
-        <id>coveralls-report</id>
+            <id>coveralls-report</id>
             <build>
                 <plugins>
                     <plugin>
