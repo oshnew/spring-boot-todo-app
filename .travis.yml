@@ -5,4 +5,4 @@ branches:
   only:
   - master
 
-script: "mvn clean install"
+script: ./mvnw clean install
