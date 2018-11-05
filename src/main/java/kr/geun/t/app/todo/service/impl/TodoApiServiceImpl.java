@@ -103,9 +103,8 @@ public class TodoApiServiceImpl implements TodoApiService {
         TodoEntity dbTmpInfo = todoRepository.save(dbParam);
         addTodoRefs(param.getRefTodos(), dbTmpInfo.getTodoId());
 
-        TodoEntity dbInfo = todoRepository.findOne(dbTmpInfo.getTodoId());
 
-        return new ResponseEntity<>(new ResData<>(dbInfo, "성공했습니다."), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ResData<>("성공했습니다."), HttpStatus.CREATED);
     }
 
     /**
@@ -157,7 +156,7 @@ public class TodoApiServiceImpl implements TodoApiService {
 
         addTodoRefs(param.getRefTodos(), dbInfo.getTodoId());
 
-        return new ResponseEntity<>(new ResData<>(dbInfo, "성공했습니다."), HttpStatus.OK);
+        return new ResponseEntity<>(new ResData<>("성공했습니다."), HttpStatus.OK);
     }
 
     /**

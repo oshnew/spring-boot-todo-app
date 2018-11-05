@@ -85,8 +85,6 @@ public class TodoApiServiceModifyTest {
             .statusCd(mockParam.getStatusCd())
                 .build();
 
-
-
 		//@formatter:on
 
 		given(mockTodoRepository.findOne(mockTodoId)).willReturn(mockTodoEntity);
@@ -154,9 +152,7 @@ public class TodoApiServiceModifyTest {
 
 		//THEN(Verification)
 		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertNotNull(todoEntity);
-		assertEquals(mockParam.getTodoId(), todoEntity.getTodoId());
-		assertEquals(mockParam.getContent(), todoEntity.getContent());
+		assertNull(todoEntity);
 
 	}
 }

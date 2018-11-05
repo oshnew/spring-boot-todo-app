@@ -146,6 +146,14 @@ curl -X POST http://localhost:9999/api/v1/todo
   -H 'content-type: application/x-www-form-urlencoded'
 ```
 
+###### 성공응답
+```json
+{
+    "data": null,
+    "msg": "성공했습니다."
+}
+```
+
 ##### PUT /api/v1/todo/{todoId} [#9](https://github.com/akageun/spring-boot-todo-app/issues/9)
 > 등록된 글을 수정한다.
 
@@ -172,14 +180,7 @@ curl -X PUT http://localhost:9999/api/v1/todo/1
 ###### 성공응답
 ```json
 {
-    "data": {
-        "todoId": 1,
-        "content": "집안일 수정",
-        "statusCd": "NOT_YET",
-        "createdAt": null,
-        "updatedAt": "2018-10-27 23:19:49",
-        "todoRefs": null
-    },
+    "data": null,
     "msg": "성공했습니다."
 }
 ```

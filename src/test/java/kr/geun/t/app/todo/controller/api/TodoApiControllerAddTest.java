@@ -113,9 +113,6 @@ public class TodoApiControllerAddTest {
             //THEN(Verification)
             .andExpect(status().isCreated())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.data.content").value(mockParam.getContent()))
-            .andExpect(jsonPath("$.data.statusCd").value(mockParam.getStatusCd()))
-            .andExpect(jsonPath("$.data.todoRefs").isEmpty())
             ;
         //@formatter:on
 

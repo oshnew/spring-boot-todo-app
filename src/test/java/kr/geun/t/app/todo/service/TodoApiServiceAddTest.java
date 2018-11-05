@@ -20,10 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.BDDMockito.given;
 
 /**
@@ -75,7 +74,6 @@ public class TodoApiServiceAddTest {
 		//@formatter:on
 
 		given(todoRepository.save(mockSaveParam)).willReturn(mockTodoEntity);
-		given(todoRepository.findOne(mockTodoEntity.getTodoId())).willReturn(mockTodoEntity);
 
 		//WHEN(Execution)
 		ResponseEntity<ResData<TodoEntity>> result = todoApiService.add(mockParam);
@@ -85,9 +83,7 @@ public class TodoApiServiceAddTest {
 		//THEN(Verification)
 		assertEquals(HttpStatus.CREATED, result.getStatusCode());
 		//assertEquals("성공했습니다.", resultBody.getMsg());
-		assertNotNull(todoEntity);
-		assertEquals(mockParam.getContent(), todoEntity.getContent());
-
+		assertNull(todoEntity);
 	}
 
 	/**
@@ -125,10 +121,6 @@ public class TodoApiServiceAddTest {
 		given(todoRepository.save(mockSaveParam)).willReturn(mockTodoEntity);
 		given(todoRefRepository.save(mockTodoRefParam)).willReturn(mockTodoRefEntity);
 
-		mockTodoEntity.setTodoRefs(Arrays.asList(mockTodoRefEntity));
-
-		given(todoRepository.findOne(mockTodoEntity.getTodoId())).willReturn(mockTodoEntity);
-
 		//WHEN(Execution)
 		ResponseEntity<ResData<TodoEntity>> result = todoApiService.add(mockParam);
 		ResData<TodoEntity> resultBody = result.getBody();
@@ -137,8 +129,6 @@ public class TodoApiServiceAddTest {
 		//THEN(Verification)
 		assertEquals(HttpStatus.CREATED, result.getStatusCode());
 		//assertEquals("성공했습니다.", resultBody.getMsg());
-		assertNotNull(todoEntity);
-		assertEquals(mockParam.getContent(), todoEntity.getContent());
-		assertEquals(mockParam.getRefTodos().length, todoEntity.getTodoRefs().size());
+		assertNull(todoEntity);
 	}
 }
