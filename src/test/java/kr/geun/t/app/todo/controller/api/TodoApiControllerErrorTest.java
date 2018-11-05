@@ -1,7 +1,7 @@
 package kr.geun.t.app.todo.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.geun.t.app.config.ExceptionHandler;
+import kr.geun.t.app.config.GlobalExceptionHandler;
 import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.dto.TodoDTO;
 import kr.geun.t.app.todo.service.TodoApiService;
@@ -44,7 +44,7 @@ public class TodoApiControllerErrorTest {
 
 	@Before
 	public void setUp() {
-		mvc = MockMvcBuilders.standaloneSetup(mockController).setControllerAdvice(new ExceptionHandler()).build();
+		mvc = MockMvcBuilders.standaloneSetup(mockController).setControllerAdvice(new GlobalExceptionHandler()).build();
 
 	}
 
@@ -171,6 +171,30 @@ public class TodoApiControllerErrorTest {
 
             //THEN(Verification)
             .andExpect(status().isInternalServerError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.msg").isNotEmpty())
+            ;
+        //@formatter:on
+	}
+
+	/**
+	 * 시스템 에러 테스트
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testFailMethodNotSupported() throws Exception {
+		//GIVEN(Preparation)
+
+		//@formatter:off
+        mvc.perform(
+            //WHEN(Execution)
+            post("/api/v1/todo/search")
+                .param("keyword", "테스트")
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+
+            //THEN(Verification)
+            .andExpect(status().isMethodNotAllowed())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.msg").isNotEmpty())
             ;

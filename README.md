@@ -3,7 +3,9 @@
 
 [![Build Status](https://travis-ci.org/akageun/spring-boot-todo-app.svg?branch=master)](https://travis-ci.org/akageun/spring-boot-todo-app)
 [![Coverage Status](https://coveralls.io/repos/github/akageun/spring-boot-todo-app/badge.svg?branch=master)](https://coveralls.io/github/akageun/spring-boot-todo-app?branch=master)
-
+[![versionSpringboot](https://img.shields.io/badge/springboot-1.5.17_RELEASE-blue.svg)](https://github.com/spring-projects/spring-boot)
+[![versionBootstrap](https://img.shields.io/badge/bootstrap-4.1.3-yellow.svg)](https://getbootstrap.com/)
+[![versionJquery](https://img.shields.io/badge/jquery-3.3.1-ff69b4.svg)](https://jquery.com/)
 
 이 프로젝트는 Spring Boot로 만들어진 Todo Application 입니다.
 

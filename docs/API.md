@@ -9,7 +9,7 @@
 
 ###### 실행예시
 ```
-curl -X GET 'http://localhost:9999/api/v1/todo?pageNuber=0'
+curl -X GET 'http://localhost:9999/api/v1/todo?pageNumber=0'
 ```
 
 ###### 성공응답

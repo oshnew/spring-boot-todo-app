@@ -21,9 +21,7 @@ public class TodoDTO {
      * 리스트
      */
     @Data
-    @Builder
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class List {
         @Min(0)
         private int pageNumber;
@@ -41,7 +39,6 @@ public class TodoDTO {
         @Size(min = 2, max = 1024)
         private String content;
 
-//        @TodoStatusCdValid
         private String statusCd;
 
         private Long[] refTodos;
@@ -76,7 +73,6 @@ public class TodoDTO {
         @Size(min = 2, max = 1024)
         private String content;
 
-//        @TodoStatusCdValid
         private String statusCd;
 
         private Long[] refTodos;
