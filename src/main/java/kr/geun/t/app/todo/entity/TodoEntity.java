@@ -25,7 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "todo")
+@Table(name = "todo", indexes = {@Index(name = "IDX_content", columnList = "content")})
 public class TodoEntity {
 
 	/**

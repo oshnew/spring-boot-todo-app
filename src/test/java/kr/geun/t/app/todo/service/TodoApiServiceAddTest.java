@@ -1,6 +1,7 @@
 package kr.geun.t.app.todo.service;
 
 import kr.geun.t.app.common.response.ResData;
+import kr.geun.t.app.config.EhCacheConfig;
 import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.dto.TodoDTO;
 import kr.geun.t.app.todo.entity.TodoEntity;
@@ -13,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -31,27 +33,28 @@ import static org.mockito.BDDMockito.given;
  */
 @Slf4j
 @RunWith(SpringRunner.class)
+@Import(EhCacheConfig.class)
 @SpringBootTest
 public class TodoApiServiceAddTest {
 
-    @MockBean
-    private TodoRepository todoRepository;
+	@MockBean
+	private TodoRepository todoRepository;
 
-    @MockBean
-    private TodoRefRepository todoRefRepository;
+	@MockBean
+	private TodoRefRepository todoRefRepository;
 
-    @Autowired
-    private TodoApiService todoApiService;
+	@Autowired
+	private TodoApiService todoApiService;
 
-    /**
-     * 할일만 입력할 경우에 대한 성공 테스트
-     */
-    @Test
-    public void testSuccessAddOnlyTodo() {
-        //GIVEN(Preparation)
-        LocalDateTime ldt = LocalDateTime.now();
+	/**
+	 * 할일만 입력할 경우에 대한 성공 테스트
+	 */
+	@Test
+	public void testSuccessAddOnlyTodo() {
+		//GIVEN(Preparation)
+		LocalDateTime ldt = LocalDateTime.now();
 
-        //@formatter:off
+		//@formatter:off
         TodoEntity mockSaveParam = TodoEntity.builder()
             .content("집안일")
             .statusCd(TodoStatusCd.NOT_YET.name())
@@ -71,31 +74,31 @@ public class TodoApiServiceAddTest {
 			.build();
 		//@formatter:on
 
-        given(todoRepository.save(mockSaveParam)).willReturn(mockTodoEntity);
-        given(todoRepository.findOne(mockTodoEntity.getTodoId())).willReturn(mockTodoEntity);
+		given(todoRepository.save(mockSaveParam)).willReturn(mockTodoEntity);
+		given(todoRepository.findOne(mockTodoEntity.getTodoId())).willReturn(mockTodoEntity);
 
-        //WHEN(Execution)
-        ResponseEntity<ResData<TodoEntity>> result = todoApiService.add(mockParam);
-        ResData<TodoEntity> resultBody = result.getBody();
-        TodoEntity todoEntity = resultBody.getData();
+		//WHEN(Execution)
+		ResponseEntity<ResData<TodoEntity>> result = todoApiService.add(mockParam);
+		ResData<TodoEntity> resultBody = result.getBody();
+		TodoEntity todoEntity = resultBody.getData();
 
-        //THEN(Verification)
-        assertEquals(HttpStatus.CREATED, result.getStatusCode());
-        //assertEquals("성공했습니다.", resultBody.getMsg());
-        assertNotNull(todoEntity);
-        assertEquals(mockParam.getContent(), todoEntity.getContent());
+		//THEN(Verification)
+		assertEquals(HttpStatus.CREATED, result.getStatusCode());
+		//assertEquals("성공했습니다.", resultBody.getMsg());
+		assertNotNull(todoEntity);
+		assertEquals(mockParam.getContent(), todoEntity.getContent());
 
-    }
+	}
 
-    /**
-     * 할일과 참조가 함께 추가되는 경우의 성공 테스트
-     */
-    @Test
-    public void testSuccessAddWithTodoRef() {
-        //GIVEN(Preparation)
-        LocalDateTime ldt = LocalDateTime.now();
+	/**
+	 * 할일과 참조가 함께 추가되는 경우의 성공 테스트
+	 */
+	@Test
+	public void testSuccessAddWithTodoRef() {
+		//GIVEN(Preparation)
+		LocalDateTime ldt = LocalDateTime.now();
 
-        //@formatter:off
+		//@formatter:off
         TodoEntity mockSaveParam = TodoEntity.builder()
             .content("빨래")
             .statusCd(TodoStatusCd.NOT_YET.name())
@@ -119,23 +122,23 @@ public class TodoApiServiceAddTest {
 		TodoRefEntity mockTodoRefEntity = TodoRefEntity.builder().parentTodoId(mockTodoEntity.getTodoId()).refTodoId(2L).build();
 		//@formatter:on
 
-        given(todoRepository.save(mockSaveParam)).willReturn(mockTodoEntity);
-        given(todoRefRepository.save(mockTodoRefParam)).willReturn(mockTodoRefEntity);
+		given(todoRepository.save(mockSaveParam)).willReturn(mockTodoEntity);
+		given(todoRefRepository.save(mockTodoRefParam)).willReturn(mockTodoRefEntity);
 
-        mockTodoEntity.setTodoRefs(Arrays.asList(mockTodoRefEntity));
+		mockTodoEntity.setTodoRefs(Arrays.asList(mockTodoRefEntity));
 
-        given(todoRepository.findOne(mockTodoEntity.getTodoId())).willReturn(mockTodoEntity);
+		given(todoRepository.findOne(mockTodoEntity.getTodoId())).willReturn(mockTodoEntity);
 
-        //WHEN(Execution)
-        ResponseEntity<ResData<TodoEntity>> result = todoApiService.add(mockParam);
-        ResData<TodoEntity> resultBody = result.getBody();
-        TodoEntity todoEntity = resultBody.getData();
+		//WHEN(Execution)
+		ResponseEntity<ResData<TodoEntity>> result = todoApiService.add(mockParam);
+		ResData<TodoEntity> resultBody = result.getBody();
+		TodoEntity todoEntity = resultBody.getData();
 
-        //THEN(Verification)
-        assertEquals(HttpStatus.CREATED, result.getStatusCode());
-        //assertEquals("성공했습니다.", resultBody.getMsg());
-        assertNotNull(todoEntity);
-        assertEquals(mockParam.getContent(), todoEntity.getContent());
-        assertEquals(mockParam.getRefTodos().length, todoEntity.getTodoRefs().size());
-    }
+		//THEN(Verification)
+		assertEquals(HttpStatus.CREATED, result.getStatusCode());
+		//assertEquals("성공했습니다.", resultBody.getMsg());
+		assertNotNull(todoEntity);
+		assertEquals(mockParam.getContent(), todoEntity.getContent());
+		assertEquals(mockParam.getRefTodos().length, todoEntity.getTodoRefs().size());
+	}
 }

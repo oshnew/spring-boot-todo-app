@@ -12,6 +12,7 @@ import kr.geun.t.app.todo.service.TodoApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -241,13 +242,16 @@ public class TodoApiServiceImpl implements TodoApiService {
 
     /**
      * 검색
+     *  - TTL 을 짧게 설정하여 반복적인 쿼리 요청 방어
+     *  - 기존 양방향 검색에서 후방 검색만 추가하여 Index 적용
      *
      * @param param
      * @return
      */
     @Override
+    @Cacheable(cacheNames = "searchApiCache", key = "#param.keyword")
     public ResponseEntity<ResData<List<TodoEntity>>> search(TodoDTO.Search param) {
-        List<TodoEntity> list = todoRepository.findByContentContaining(param.getKeyword());
+        List<TodoEntity> list = todoRepository.findByContentStartingWith(param.getKeyword());
 
         return new ResponseEntity<>(new ResData<>(list, "성공했습니다."), HttpStatus.OK);
     }

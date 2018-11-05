@@ -2,6 +2,7 @@ package kr.geun.t.app.todo.service;
 
 import kr.geun.t.app.common.constants.CmnConst;
 import kr.geun.t.app.common.response.ResData;
+import kr.geun.t.app.config.EhCacheConfig;
 import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.entity.TodoEntity;
 import kr.geun.t.app.todo.repository.TodoRepository;
@@ -11,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +35,7 @@ import static org.mockito.BDDMockito.given;
  */
 @Slf4j
 @RunWith(SpringRunner.class)
+@Import(EhCacheConfig.class)
 @SpringBootTest
 public class TodoApiServiceListTest {
 

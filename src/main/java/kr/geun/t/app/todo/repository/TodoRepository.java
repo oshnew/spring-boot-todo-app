@@ -19,5 +19,5 @@ public interface TodoRepository extends JpaRepository<TodoEntity, Long> {
 	 * @param keyword
 	 * @return
 	 */
-	List<TodoEntity> findByContentContaining(String keyword);
+	List<TodoEntity> findByContentStartingWith(String keyword);
 }

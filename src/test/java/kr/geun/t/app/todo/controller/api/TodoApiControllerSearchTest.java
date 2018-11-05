@@ -89,7 +89,7 @@ public class TodoApiControllerSearchTest {
         list.add(TodoEntity.builder().content("청소").statusCd(TodoStatusCd.COMPLETE.name()).build());
         list.add(TodoEntity.builder().content("방청소").statusCd(TodoStatusCd.NOT_YET.name()).build());
 
-        given(todoRepository.findByContentContaining(mockParam.getKeyword())).willReturn(list);
+        given(todoRepository.findByContentStartingWith(mockParam.getKeyword())).willReturn(list);
 
         //@formatter:off
         mvc.perform(

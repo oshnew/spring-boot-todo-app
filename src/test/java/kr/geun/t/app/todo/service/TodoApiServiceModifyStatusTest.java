@@ -1,6 +1,7 @@
 package kr.geun.t.app.todo.service;
 
 import kr.geun.t.app.common.response.ResData;
+import kr.geun.t.app.config.EhCacheConfig;
 import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.dto.TodoDTO;
 import kr.geun.t.app.todo.entity.TodoEntity;
@@ -10,10 +11,10 @@ import kr.geun.t.app.todo.repository.TodoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -31,6 +32,7 @@ import static org.mockito.BDDMockito.given;
  */
 @Slf4j
 @RunWith(SpringRunner.class)
+@Import(EhCacheConfig.class)
 @SpringBootTest
 public class TodoApiServiceModifyStatusTest {
 
