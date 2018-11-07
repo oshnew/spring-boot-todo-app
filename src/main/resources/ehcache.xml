@@ -10,7 +10,7 @@
            maxElementsInMemory="64"
            overflowToDisk="false"
            diskPersistent="false"
-           timeToIdleSeconds="0"
+           timeToIdleSeconds="5"
            timeToLiveSeconds="10"
            memoryStoreEvictionPolicy="LRU">
     </cache>
