@@ -5,10 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * Exception 핸들링
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author akageun
  */
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
 	/**
@@ -25,7 +24,6 @@ public class GlobalExceptionHandler {
 	 * @param e
 	 * @return
 	 */
-	@ResponseBody
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
 	public ResData handleException(Exception e) {
@@ -38,7 +36,6 @@ public class GlobalExceptionHandler {
 	 * @param ex
 	 * @return
 	 */
-	@ResponseBody
 	@ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResData httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
@@ -51,7 +48,6 @@ public class GlobalExceptionHandler {
 	 * @param ex
 	 * @return
 	 */
-	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResData httpMessageNotReadableException(HttpMessageNotReadableException ex) {
