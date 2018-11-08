@@ -34,12 +34,12 @@
 git clone https://github.com/akageun/spring-boot-todo-app.git
 ```
 
-2. 빌드하기(실행 jar명은 변경 될 수 있습니다. [#17](https://github.com/akageun/spring-boot-todo-app/issues/17))
+2. 빌드하기 [#17](https://github.com/akageun/spring-boot-todo-app/issues/17))
 ```
 cd spring-boot-todo-app
 (만약 test를 skip하고 싶으면 아래 명령어에 -DskipTests=true 를 붙이면 됨)
 mvn package
-java -jar target/todo-app-0.1.0.jar 
+java -jar target/todo-app.jar 
 ```
 
 - 위 방법과 다른 실행 방법

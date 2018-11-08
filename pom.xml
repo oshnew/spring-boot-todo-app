@@ -25,7 +25,7 @@
 
         <hibernate.version>5.2.8.Final</hibernate.version>
 
-        <deploy.file.name>todo-app-${project.version}</deploy.file.name>
+        <deploy.file.name>todo-app</deploy.file.name>
     </properties>
 
     <dependencies>
