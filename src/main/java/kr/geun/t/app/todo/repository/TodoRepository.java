@@ -1,7 +1,6 @@
 package kr.geun.t.app.todo.repository;
 
 import kr.geun.t.app.todo.entity.TodoEntity;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
