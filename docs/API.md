@@ -193,7 +193,7 @@ curl -X PUT http://localhost:9999/api/v1/todo/1
 | name | type | 필수 |description | example| 비고 | 
 |:-------:|:-------:|:-------|:------:|:------:|:------:|
 | todoId | Number |Y| 할일번호 | 1 ||
-| content | String |Y| 할일 | 화장실 청소 |최소 2글자 이상 1024자 이하|
+| statusCd | String |Y| 상태값 | COMPLETE | 지정된 상태값만 사용가능(NOT_YET, COMPLETE)|
 
 ###### 실행 예시
 ```

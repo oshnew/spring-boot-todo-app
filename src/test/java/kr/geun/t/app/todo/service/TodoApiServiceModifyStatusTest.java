@@ -112,7 +112,6 @@ public class TodoApiServiceModifyStatusTest {
         //@formatter:off
 		TodoDTO.ModifyStatus mockParam = TodoDTO.ModifyStatus.builder()
             .todoId(1L)
-            .content("집안일")
 			.statusCd(TodoStatusCd.COMPLETE.name())
 			.build();
 
