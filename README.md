@@ -12,8 +12,7 @@
 ![SAMPLE_SCREENSHOT](./docs/sample_ss_01.png)
 
 ## DEMO
-[https://todo.geun.kr](https://todo.geun.kr)
-- failover 안되어 있어서 배포 중에는 일시적으로 확인이 안될 수 있습니다.
+[https://todo.geun.kr](https://todo.geun.kr) : Push시에 무중단 배포처리가 안되어 있어서, 잠시 사이트가 동작하지 않을 수 있습니다.
 
 ## 사용기술
 - Jdk 1.8
