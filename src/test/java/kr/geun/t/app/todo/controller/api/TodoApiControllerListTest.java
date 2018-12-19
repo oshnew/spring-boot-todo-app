@@ -3,8 +3,6 @@ package kr.geun.t.app.todo.controller.api;
 import kr.geun.t.app.common.constants.CmnConst;
 import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.entity.TodoEntity;
-import kr.geun.t.app.todo.repository.TodoRefRepository;
-import kr.geun.t.app.todo.repository.TodoRepository;
 import kr.geun.t.app.todo.service.TodoApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -35,17 +33,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @Slf4j
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = {TodoApiController.class, TodoApiService.class})
+@WebMvcTest(value = {TodoApiController.class})
 public class TodoApiControllerListTest {
 
     @Autowired
     private MockMvc mvc;
 
     @MockBean
-    private TodoRepository todoRepository;
-
-    @MockBean
-    private TodoRefRepository todoRefRepository;
+    private TodoApiService todoApiService;
 
     /**
      * 성공 테스트
@@ -67,7 +62,7 @@ public class TodoApiControllerListTest {
         list.add(TodoEntity.builder().content("청소").statusCd(TodoStatusCd.COMPLETE.name()).createdAt(ldt).updatedAt(ldt).build());
         list.add(TodoEntity.builder().content("방청소").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
 
-        given(todoRepository.findAll(pageable)).willReturn(new PageImpl<>(list));
+        given(todoApiService.list(pageable)).willReturn(new PageImpl<>(list));
 
         //@formatter:off
         mvc.perform(

@@ -1,6 +1,5 @@
 package kr.geun.t.app.todo.service;
 
-import kr.geun.t.app.common.response.ResData;
 import kr.geun.t.app.config.EhCacheConfig;
 import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.dto.TodoDTO;
@@ -14,9 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
@@ -55,12 +51,10 @@ public class TodoApiServiceGetTest {
 		given(mockTodoRepository.findOne(mockParam.getTodoId())).willReturn(null);
 
 		//WHEN(Execution)
-		ResponseEntity<ResData<TodoEntity>> result = todoApiService.get(mockParam);
-		ResData<TodoEntity> resultBody = result.getBody();
+		TodoEntity result = todoApiService.get(mockParam.getTodoId());
 
 		//THEN(Verification)
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
-		assertNull(resultBody.getData());
+		assertNull(result);
 	}
 
 	/**
@@ -79,14 +73,11 @@ public class TodoApiServiceGetTest {
 		given(mockTodoRepository.findOne(mockParam.getTodoId())).willReturn(mockTodoEntity);
 
 		//WHEN(Execution)
-		ResponseEntity<ResData<TodoEntity>> result = todoApiService.get(mockParam);
-		ResData<TodoEntity> resultBody = result.getBody();
-		TodoEntity todoEntity = resultBody.getData();
+		TodoEntity result = todoApiService.get(mockParam.getTodoId());
 
 		//THEN(Verification)
-		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertNotNull(todoEntity);
-		assertEquals(mockTodoEntity.getContent(), todoEntity.getContent());
+		assertNotNull(result);
+		assertEquals(mockTodoEntity.getContent(), result.getContent());
 	}
 
 	/**
@@ -111,16 +102,13 @@ public class TodoApiServiceGetTest {
 		given(mockTodoRepository.findOne(mockParam.getTodoId())).willReturn(mockTodoEntity);
 
 		//WHEN(Execution)
-		ResponseEntity<ResData<TodoEntity>> result = todoApiService.get(mockParam);
-		ResData<TodoEntity> resultBody = result.getBody();
-		TodoEntity todoEntity = resultBody.getData();
+		TodoEntity result = todoApiService.get(mockParam.getTodoId());
 
 		//THEN(Verification)
-		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertNotNull(todoEntity);
-		assertEquals(mockTodoEntity.getContent(), todoEntity.getContent());
-		assertEquals(1, todoEntity.getTodoRefs().size());
+		assertNotNull(result);
+		assertEquals(mockTodoEntity.getContent(), result.getContent());
+		assertEquals(1, result.getTodoRefs().size());
 
-		assertEquals(mockTodoEntity.getTodoRefs().get(0).getRefTodoId(), todoEntity.getTodoRefs().get(0).getRefTodoId());
+		assertEquals(mockTodoEntity.getTodoRefs().get(0).getRefTodoId(), result.getTodoRefs().get(0).getRefTodoId());
 	}
 }

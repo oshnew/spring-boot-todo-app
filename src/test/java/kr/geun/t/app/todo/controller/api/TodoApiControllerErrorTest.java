@@ -64,7 +64,7 @@ public class TodoApiControllerErrorTest {
 			.build();
 
 		//@formatter:on
-		given(todoApiService.add(mockParam)).willThrow(new RuntimeException("mock exception"));
+		given(todoApiService.add(mockParam.getContent(), mockParam.getRefTodos())).willThrow(new RuntimeException("mock exception"));
 
 		//@formatter:off
         mvc.perform(
@@ -97,7 +97,7 @@ public class TodoApiControllerErrorTest {
 			.build();
 		//@formatter:on
 
-		given(todoApiService.get(mockParam)).willThrow(new RuntimeException("mock exception"));
+		given(todoApiService.get(mockParam.getTodoId())).willThrow(new RuntimeException("mock exception"));
 
 		//@formatter:off
         mvc.perform(
