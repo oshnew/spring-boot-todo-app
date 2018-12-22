@@ -34,18 +34,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(value = TodoApiController.class)
 public class TodoApiControllerErrorTest {
 
+	private MockMvc mvc;
+
 	@MockBean
 	private TodoApiService todoApiService;
-
-	private MockMvc mvc;
 
 	@InjectMocks
 	private TodoApiController mockController;
 
 	@Before
 	public void setUp() {
-		mvc = MockMvcBuilders.standaloneSetup(mockController).setControllerAdvice(new GlobalExceptionHandler()).build();
-
+		//@formatter:off
+		mvc = MockMvcBuilders
+			.standaloneSetup(mockController)
+			.setControllerAdvice(new GlobalExceptionHandler())
+			.build();
+		//@formatter:on
 	}
 
 	/**
@@ -91,18 +95,14 @@ public class TodoApiControllerErrorTest {
 	@Test
 	public void testFailSystemErrGet() throws Exception {
 		//GIVEN(Preparation)
-		//@formatter:off
-		TodoDTO.Get mockParam = TodoDTO.Get.builder()
-            .todoId(1L)
-			.build();
-		//@formatter:on
+		final Long mockTodoId = 1L;
 
-		given(todoApiService.get(mockParam.getTodoId())).willThrow(new RuntimeException("mock exception"));
+		given(todoApiService.get(mockTodoId)).willThrow(new RuntimeException("mock exception"));
 
 		//@formatter:off
         mvc.perform(
             //WHEN(Execution)
-            get("/api/v1/todo/{id}",1L)
+            get("/api/v1/todo/{id}",mockTodoId)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 
             //THEN(Verification)
@@ -158,6 +158,7 @@ public class TodoApiControllerErrorTest {
 		//GIVEN(Preparation)
 		Sort sort = new Sort(Sort.Direction.DESC, "todoId");
 		Pageable pageable = new PageRequest(0, 3, sort);
+
 		given(todoApiService.list(pageable)).willThrow(new RuntimeException("mock exception"));
 
 		//@formatter:off
