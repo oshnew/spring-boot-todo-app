@@ -1,10 +1,7 @@
 package kr.geun.t.app.todo.controller.api;
 
 import kr.geun.t.app.todo.code.TodoStatusCd;
-import kr.geun.t.app.todo.dto.TodoDTO;
 import kr.geun.t.app.todo.entity.TodoEntity;
-import kr.geun.t.app.todo.repository.TodoRefRepository;
-import kr.geun.t.app.todo.repository.TodoRepository;
 import kr.geun.t.app.todo.service.TodoApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -30,36 +27,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @Slf4j
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = {TodoApiController.class, TodoApiService.class})
+@WebMvcTest(value = {TodoApiController.class})
 public class TodoApiControllerSearchTest {
 
-    @Autowired
-    private MockMvc mvc;
+	@Autowired
+	private MockMvc mvc;
 
-    @MockBean
-    private TodoRefRepository todoRefRepository;
+	@MockBean
+	private TodoApiService todoApiService;
 
-    @MockBean
-    private TodoRepository todoRepository;
-
-    /**
-     * 조회 성공 테스트
-     */
-    @Test
-    public void testFailSearch() throws Exception {
-        //GIVEN(Preparation)
-        //@formatter:off
-		TodoDTO.Search mockParam = TodoDTO.Search.builder()
-            .keyword("청")
-			.build();
+	/**
+	 * 조회 테스트
+	 */
+	@Test
+	public void testFailSearch() throws Exception {
+		//GIVEN(Preparation)
+		//@formatter:off
+		final String searchKeyword = "청";
 
 		//@formatter:on
 
-        //@formatter:off
+		//todoApiService.search()
+
+		//@formatter:off
         mvc.perform(
             //WHEN(Execution)
             get("/api/v1/todo/search")
-                .param("keyword",mockParam.getKeyword())
+                .param("keyword", searchKeyword)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 
             //THEN(Verification)
@@ -69,33 +63,28 @@ public class TodoApiControllerSearchTest {
             ;
 
         //@formatter:on
-    }
+	}
 
-    /**
-     * 조회 성공 테스트
-     */
-    @Test
-    public void testSuccessSearch() throws Exception {
-        //GIVEN(Preparation)
-        //@formatter:off
-		TodoDTO.Search mockParam = TodoDTO.Search.builder()
-            .keyword("청소")
-			.build();
+	/**
+	 * 조회 성공 테스트
+	 */
+	@Test
+	public void testSuccessSearch() throws Exception {
+		//GIVEN(Preparation)
+		final String searchKeyword = "청소";
 
-		//@formatter:on
+		List<TodoEntity> list = new ArrayList<>();
 
-        List<TodoEntity> list = new ArrayList<>();
+		list.add(TodoEntity.builder().content("청소").statusCd(TodoStatusCd.COMPLETE.name()).build());
+		list.add(TodoEntity.builder().content("방청소").statusCd(TodoStatusCd.NOT_YET.name()).build());
 
-        list.add(TodoEntity.builder().content("청소").statusCd(TodoStatusCd.COMPLETE.name()).build());
-        list.add(TodoEntity.builder().content("방청소").statusCd(TodoStatusCd.NOT_YET.name()).build());
+		given(todoApiService.search(searchKeyword)).willReturn(list);
 
-        given(todoRepository.findByContentStartingWith(mockParam.getKeyword())).willReturn(list);
-
-        //@formatter:off
+		//@formatter:off
         mvc.perform(
             //WHEN(Execution)
             get("/api/v1/todo/search")
-                .param("keyword",mockParam.getKeyword())
+                .param("keyword", searchKeyword)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 
             //THEN(Verification)
@@ -106,5 +95,5 @@ public class TodoApiControllerSearchTest {
             ;
 
         //@formatter:on
-    }
+	}
 }

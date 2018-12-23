@@ -55,7 +55,7 @@ public class TodoApiController {
 		Page<TodoEntity> pageInfo = todoApiService.list(pageable);
 
 		if (pageInfo.getTotalElements() == 0) {
-			return new ResponseEntity<>(new ResData<>("등록된 데이터가 없습니다."), HttpStatus.NOT_FOUND);
+			return ResponseEntity.ok(new ResData<>("등록된 데이터가 없습니다."));
 		}
 
 		//@formatter:off
@@ -173,6 +173,8 @@ public class TodoApiController {
 			return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, CmnConst.NEW_LINE)), HttpStatus.BAD_REQUEST);
 		}
 
-		return todoApiService.search(param);
+		List<TodoEntity> searchList = todoApiService.search(param.getKeyword());
+
+		return new ResponseEntity<>(new ResData<>(searchList, "성공했습니다."), HttpStatus.OK);
 	}
 }

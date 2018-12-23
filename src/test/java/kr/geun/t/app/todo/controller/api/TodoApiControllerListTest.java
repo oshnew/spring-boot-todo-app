@@ -36,35 +36,83 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(value = {TodoApiController.class})
 public class TodoApiControllerListTest {
 
-    @Autowired
-    private MockMvc mvc;
+	@Autowired
+	private MockMvc mvc;
 
-    @MockBean
-    private TodoApiService todoApiService;
+	@MockBean
+	private TodoApiService todoApiService;
 
-    /**
-     * 성공 테스트
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testSuccessList() throws Exception {
+	@Test
+	public void 리스트_파라미터_에러() throws Exception {
+		//@formatter:off
+        mvc.perform(
+            //WHEN(Execution)
+            get("/api/v1/todo")
+				.param("pageNumber", "")
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
 
-        final int pageNumber = 0;
-        Sort sort = new Sort(Sort.Direction.DESC, CmnConst.TODO_ID_STR);
-        Pageable pageable = new PageRequest(pageNumber, CmnConst.RECORD_PER_COUNT, sort); //TODO : 상수값으로 변환해야함.
+            //THEN(Verification)
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.msg").isNotEmpty())
+            ;
 
-        LocalDateTime ldt = LocalDateTime.now();
-        List<TodoEntity> list = new ArrayList<>();
+        //@formatter:on
+	}
 
-        list.add(TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
-        list.add(TodoEntity.builder().content("빨래").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
-        list.add(TodoEntity.builder().content("청소").statusCd(TodoStatusCd.COMPLETE.name()).createdAt(ldt).updatedAt(ldt).build());
-        list.add(TodoEntity.builder().content("방청소").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
+	/**
+	 * 성공 테스트
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void 리스트가_비어있음() throws Exception {
 
-        given(todoApiService.list(pageable)).willReturn(new PageImpl<>(list));
+		final int pageNumber = 0;
+		Sort sort = new Sort(Sort.Direction.DESC, CmnConst.TODO_ID_STR);
+		Pageable pageable = new PageRequest(pageNumber, CmnConst.RECORD_PER_COUNT, sort); //TODO : 상수값으로 변환해야함.
 
-        //@formatter:off
+		given(todoApiService.list(pageable)).willReturn(new PageImpl<>(new ArrayList<>()));
+
+		//@formatter:off
+        mvc.perform(
+            //WHEN(Execution)
+            get("/api/v1/todo")
+                .param("pageNumber", String.valueOf(pageable.getPageNumber()))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+
+            //THEN(Verification)
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.msg").isNotEmpty())
+            ;
+
+        //@formatter:on
+	}
+
+	/**
+	 * 성공 테스트
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testSuccessList() throws Exception {
+
+		final int pageNumber = 0;
+		Sort sort = new Sort(Sort.Direction.DESC, CmnConst.TODO_ID_STR);
+		Pageable pageable = new PageRequest(pageNumber, CmnConst.RECORD_PER_COUNT, sort); //TODO : 상수값으로 변환해야함.
+
+		LocalDateTime ldt = LocalDateTime.now();
+		List<TodoEntity> list = new ArrayList<>();
+
+		list.add(TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
+		list.add(TodoEntity.builder().content("빨래").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
+		list.add(TodoEntity.builder().content("청소").statusCd(TodoStatusCd.COMPLETE.name()).createdAt(ldt).updatedAt(ldt).build());
+		list.add(TodoEntity.builder().content("방청소").statusCd(TodoStatusCd.NOT_YET.name()).createdAt(ldt).updatedAt(ldt).build());
+
+		given(todoApiService.list(pageable)).willReturn(new PageImpl<>(list));
+
+		//@formatter:off
         mvc.perform(
             //WHEN(Execution)
             get("/api/v1/todo")
@@ -83,6 +131,5 @@ public class TodoApiControllerListTest {
             ;
 
         //@formatter:on
-
-    }
+	}
 }

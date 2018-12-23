@@ -17,95 +17,93 @@ import javax.validation.constraints.Size;
  */
 public class TodoDTO {
 
-    /**
-     * 리스트
-     */
-    @Data
-    @NoArgsConstructor
-    public static class List {
-        @Min(0)
-        private int pageNumber;
-    }
+	/**
+	 * 리스트
+	 */
+	@Data
+	@NoArgsConstructor
+	public static class List {
+		@Min(0)
+		private int pageNumber;
+	}
 
-    /**
-     * 추가
-     */
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Add {
-        @NotBlank
-        @Size(min = 2, max = 1024)
-        private String content;
+	/**
+	 * 추가
+	 */
+	@Data
+	@Builder
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class Add {
+		@NotBlank
+		@Size(min = 2, max = 1024)
+		private String content;
 
-        private String statusCd;
+		private String statusCd;
 
-        private Long[] refTodos;
-    }
+		private Long[] refTodos;
+	}
 
-    /**
-     * 단건조회
-     */
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Get {
+	/**
+	 * 단건조회
+	 */
+	@Data
+	@Builder
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class Get {
 
-        @Min(1)
-        private Long todoId;
-    }
+		@Min(1)
+		private Long todoId;
+	}
 
-    /**
-     * 수정
-     */
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Modify {
+	/**
+	 * 수정
+	 */
+	@Data
+	@Builder
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class Modify {
 
-        @Min(1)
-        private Long todoId;
+		@Min(1)
+		private Long todoId;
 
-        @NotBlank
-        @Size(min = 2, max = 1024)
-        private String content;
+		@NotBlank
+		@Size(min = 2, max = 1024)
+		private String content;
 
-        private String statusCd;
+		private String statusCd;
 
-        private Long[] refTodos;
-    }
+		private Long[] refTodos;
+	}
 
-    /**
-     * 상태값 수정
-     */
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ModifyStatus {
-        @Min(1)
-        private Long todoId;
+	/**
+	 * 상태값 수정
+	 */
+	@Data
+	@Builder
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class ModifyStatus {
+		@Min(1)
+		private Long todoId;
 
-        @TodoStatusCdValid
-        private String statusCd;
+		@TodoStatusCdValid
+		private String statusCd;
 
-        private String content; //TODO : 추후 다이나믹쿼리를 사용하면 제거
-    }
+		private String content; //TODO : 추후 다이나믹쿼리를 사용하면 제거
+	}
 
-    /**
-     * 검색
-     */
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Search {
+	/**
+	 * 검색
+	 */
+	@Data
+	@NoArgsConstructor
+	public static class Search {
 
-        @NotBlank
-        @Size(min = 2, max = 1024)
-        private String keyword;
-    }
+		@NotBlank
+		@Size(min = 2, max = 1024)
+		private String keyword;
+	}
 }

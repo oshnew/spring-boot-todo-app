@@ -218,17 +218,15 @@ public class TodoApiServiceImpl implements TodoApiService {
 
 	/**
 	 * 검색
-	 *  - TTL 을 짧게 설정하여 반복적인 쿼리 요청 방어
-	 *  - 기존 양방향 검색에서 후방 검색만 추가하여 Index 적용
+	 * - TTL 을 짧게 설정하여 반복적인 쿼리 요청 방어
+	 * - 기존 양방향 검색에서 후방 검색만 추가하여 Index 적용
 	 *
-	 * @param param
+	 * @param keyword
 	 * @return
 	 */
 	@Override
-	@Cacheable(cacheNames = "searchApiCache", key = "#param.keyword")
-	public ResponseEntity<ResData<List<TodoEntity>>> search(TodoDTO.Search param) {
-		List<TodoEntity> list = todoRepository.findByContentStartingWith(param.getKeyword());
-
-		return new ResponseEntity<>(new ResData<>(list, "성공했습니다."), HttpStatus.OK);
+	@Cacheable(cacheNames = "searchApiCache", key = "#keyword")
+	public List<TodoEntity> search(String keyword) {
+		return todoRepository.findByContentStartingWith(keyword);
 	}
 }

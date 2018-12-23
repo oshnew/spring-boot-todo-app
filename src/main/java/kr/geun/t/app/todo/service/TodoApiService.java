@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 할일 관련 API 서비스
@@ -79,8 +78,8 @@ public interface TodoApiService {
 	/**
 	 * 검색
 	 *
-	 * @param param
+	 * @param keyword
 	 * @return
 	 */
-	ResponseEntity<ResData<List<TodoEntity>>> search(TodoDTO.Search param);
+	List<TodoEntity> search(String keyword);
 }
