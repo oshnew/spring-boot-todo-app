@@ -12,10 +12,19 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ResData<T> {
 
+	private Boolean result;
+
 	private T data;
 	private String msg;
 
 	public ResData(String msg) {
 		this.msg = msg;
 	}
+
+	public ResData(Boolean result, String msg) {
+		this.result = result;
+		this.msg = msg;
+
+	}
+
 }

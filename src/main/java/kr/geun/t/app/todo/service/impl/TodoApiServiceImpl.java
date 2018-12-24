@@ -112,28 +112,51 @@ public class TodoApiServiceImpl implements TodoApiService {
 	}
 
 	/**
-	 * 수정
+	 * 본인 스스로를 참조하는지 체크
 	 *
-	 * @param param
+	 * @param todoId
+	 * @param refTodos
+	 * @return
+	 */
+	@Override
+	public ResData<TodoEntity> isChkSelfRef(Long todoId, Long[] refTodos) {
+		if (refTodos != null && refTodos.length > 0) { //참조걸린 할일들
+			List<Long> tt = Arrays.asList(refTodos);
+
+			if (tt.contains(todoId)) {
+				return new ResData<>(false, "자기 자신을 참조할 수 없습니다.");
+			}
+		}
+
+		return new ResData<>(true, "성공했습니다.");
+	}
+
+	/**
+	 * 글 수정
+	 *
+	 * @param todoId
+	 * @param content
+	 * @param statusCd
+	 * @param refTodos
 	 * @return
 	 */
 	@Transactional
 	@Override
-	public ResponseEntity<ResData<TodoEntity>> modify(TodoDTO.Modify param) {
+	public ResData<TodoEntity> modify(Long todoId, String content, String statusCd, Long[] refTodos) {
 		//@formatter:off
 		TodoEntity dbParam = TodoEntity.builder()
-			.todoId(param.getTodoId())
-			.content(param.getContent())
-			.statusCd(param.getStatusCd())
+			.todoId(todoId)
+			.content(content)
+			.statusCd(statusCd)
 				.build();
 		//@formatter:on
 
 		TodoEntity dbInfo = todoRepository.save(dbParam);
 		todoRefRepository.deleteByParentTodoId(dbInfo.getTodoId());
 
-		addTodoRefs(param.getRefTodos(), dbInfo.getTodoId());
+		addTodoRefs(refTodos, todoId);
 
-		return new ResponseEntity<>(new ResData<>("성공했습니다."), HttpStatus.OK);
+		return new ResData<>(true, "성공했습니다.");
 	}
 
 	/**

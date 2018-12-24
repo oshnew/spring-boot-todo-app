@@ -72,7 +72,7 @@ public class TodoApiController {
 		rtnMap.put("resultList", pageInfo.getContent());
 		rtnMap.put("pagination", paginationInfo);
 
-		return ResponseEntity.ok(new ResData<>(rtnMap, "성공했습니다."));
+		return ResponseEntity.ok(new ResData<>(true, rtnMap, "성공했습니다."));
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class TodoApiController {
 			return new ResponseEntity<>(new ResData<>("데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
 		}
 
-		return ResponseEntity.ok(new ResData<>(dbInfo, "성공했습니다."));
+		return ResponseEntity.ok(new ResData<>(true, dbInfo, "성공했습니다."));
 
 	}
 
@@ -129,12 +129,19 @@ public class TodoApiController {
 			return new ResponseEntity<>(new ResData<>(CmnUtils.getErrMsg(result, CmnConst.NEW_LINE)), HttpStatus.BAD_REQUEST);
 		}
 
-		ResponseEntity<ResData<TodoEntity>> preChk = todoApiService.preModify(param);
-		if (preChk.getStatusCode().is2xxSuccessful() == false) {
-			return preChk;
+		TodoEntity dbInfo = todoApiService.get(param.getTodoId());
+		if (dbInfo == null) {
+			return new ResponseEntity<>(new ResData<>("데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
 		}
 
-		return todoApiService.modify(param);
+		ResData<TodoEntity> preCheck = todoApiService.isChkSelfRef(param.getTodoId(), param.getRefTodos());
+		if (preCheck.getResult() == false) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(preCheck);
+		}
+
+		todoApiService.modify(param.getTodoId(), param.getContent(), dbInfo.getStatusCd(), param.getRefTodos());
+
+		return ResponseEntity.ok(new ResData<>("성공했습니다."));
 
 	}
 
@@ -175,6 +182,6 @@ public class TodoApiController {
 
 		List<TodoEntity> searchList = todoApiService.search(param.getKeyword());
 
-		return new ResponseEntity<>(new ResData<>(searchList, "성공했습니다."), HttpStatus.OK);
+		return new ResponseEntity<>(new ResData<>(true, searchList, "성공했습니다."), HttpStatus.OK);
 	}
 }

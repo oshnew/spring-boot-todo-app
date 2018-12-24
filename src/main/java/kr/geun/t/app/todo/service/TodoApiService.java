@@ -51,12 +51,24 @@ public interface TodoApiService {
 	ResponseEntity<ResData<TodoEntity>> preModify(TodoDTO.Modify param);
 
 	/**
-	 * 수정
+	 * 본인 스스로를 참조하는지 체크
 	 *
-	 * @param param
+	 * @param todoId
+	 * @param refTodos
 	 * @return
 	 */
-	ResponseEntity<ResData<TodoEntity>> modify(TodoDTO.Modify param);
+	ResData<TodoEntity> isChkSelfRef(Long todoId, Long[] refTodos);
+
+	/**
+	 * 글 수정
+	 *
+	 * @param todoId
+	 * @param content
+	 * @param statusCd
+	 * @param refTodos
+	 * @return
+	 */
+	ResData<TodoEntity> modify(Long todoId, String content, String statusCd, Long[] refTodos);
 
 	/**
 	 * 완료처리
