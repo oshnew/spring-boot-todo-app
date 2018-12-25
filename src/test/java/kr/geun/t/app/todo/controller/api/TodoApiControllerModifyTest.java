@@ -1,12 +1,11 @@
 package kr.geun.t.app.todo.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.geun.t.app.common.response.ResData;
 import kr.geun.t.app.todo.code.TodoStatusCd;
 import kr.geun.t.app.todo.dto.TodoDTO;
 import kr.geun.t.app.todo.entity.TodoEntity;
 import kr.geun.t.app.todo.entity.TodoRefEntity;
-import kr.geun.t.app.todo.repository.TodoRefRepository;
-import kr.geun.t.app.todo.repository.TodoRepository;
 import kr.geun.t.app.todo.service.TodoApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
@@ -24,6 +23,7 @@ import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -33,29 +33,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @Slf4j
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = {TodoApiController.class, TodoApiService.class})
+@WebMvcTest(value = {TodoApiController.class})
 public class TodoApiControllerModifyTest {
 
-    @Autowired
-    private MockMvc mvc;
+	@Autowired
+	private MockMvc mvc;
 
-    @MockBean
-    private TodoRefRepository todoRefRepository;
+	//	@MockBean
+	//	private TodoRefRepository todoRefRepository;
+	//
+	//	@MockBean
+	//	private TodoRepository todoRepository;
 
-    @MockBean
-    private TodoRepository todoRepository;
+	@MockBean
+	private TodoApiService todoApiService;
 
-    private static final ObjectMapper OM = new ObjectMapper();
+	private static final ObjectMapper OM = new ObjectMapper();
 
-    /**
-     * 파라미터 에러 테스트
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testFailParameterErr() throws Exception {
-        //GIVEN(Preparation)
-        //@formatter:off
+	/**
+	 * 파라미터 에러 테스트
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testFailParameterErr() throws Exception {
+		//GIVEN(Preparation)
+		//@formatter:off
         TodoDTO.Modify mockParam = TodoDTO.Modify.builder()
             .todoId(1L)
 //            .content("집안일")
@@ -75,17 +78,17 @@ public class TodoApiControllerModifyTest {
             ;
         //@formatter:on
 
-    }
+	}
 
-    /**
-     * 수정 성공 테스트
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testSuccessModify() throws Exception {
-        //GIVEN(Preparation)
-        //@formatter:off
+	/**
+	 * 수정 성공 테스트
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testSuccessModify() throws Exception {
+		//GIVEN(Preparation)
+		//@formatter:off
 		TodoDTO.Modify mockParam = TodoDTO.Modify.builder()
             .todoId(1L)
             .content("집안일2")
@@ -94,17 +97,21 @@ public class TodoApiControllerModifyTest {
 
 		//@formatter:on
 
-        TodoEntity preDataEntity = TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build();
-        TodoEntity inputDataEntity = TodoEntity.builder().todoId(mockParam.getTodoId()).content(mockParam.getContent()).statusCd(
-            mockParam.getStatusCd()).build();
+		TodoEntity preDataEntity = TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).build();
+		TodoEntity inputDataEntity = TodoEntity.builder().todoId(mockParam.getTodoId()).content(mockParam.getContent()).statusCd(
+			mockParam.getStatusCd()).build();
 
-        given(todoRepository.findOne(mockParam.getTodoId())).willReturn(preDataEntity);
-        given(todoRepository.save(inputDataEntity)).willReturn(inputDataEntity);
+		given(todoApiService.get(mockParam.getTodoId())).willReturn(preDataEntity);
+		given(todoApiService.isChkSelfRef(mockParam.getTodoId(), null)).willReturn(new ResData<>(true, "성공했습니다."));
+		given(todoApiService.modify(mockParam.getTodoId(), inputDataEntity.getContent(), inputDataEntity.getStatusCd(),
+			mockParam.getRefTodos())).willReturn(new ResData<>(true, "성공"));
 
-        //@formatter:off
+		log.info("test : {}", OM.writeValueAsString(mockParam));
+
+		//@formatter:off
         mvc.perform(
             //WHEN(Execution)
-            put("/api/v1/todo/{id}", mockParam.getTodoId())
+            put("/api/v1/todo/{id}", 1L)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(OM.writeValueAsString(mockParam)))
 
@@ -112,22 +119,22 @@ public class TodoApiControllerModifyTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.msg").isNotEmpty())
+			.andDo(print())
             ;
         //@formatter:on
 
-    }
+	}
 
-    /**
-     * 수정 성공 테스트
-     * TODO : 추가해야함.
-     *
-     * @throws Exception
-     */
-    @Ignore
-    @Test
-    public void testSuccessModifyWithRef() throws Exception {
-        //GIVEN(Preparation)
-        //@formatter:off
+	/**
+	 * 수정 성공 테스트
+	 * TODO : 추가해야함.
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testSuccessModifyWithRef() throws Exception {
+		//GIVEN(Preparation)
+		//@formatter:off
 		TodoDTO.Modify mockParam = TodoDTO.Modify.builder()
             .todoId(1L)
             .content("집안일2")
@@ -137,20 +144,35 @@ public class TodoApiControllerModifyTest {
 
 		//@formatter:on
 
-        List<TodoRefEntity> refEntities = new ArrayList<>();
-        for (Long refTodo : mockParam.getRefTodos()) {
-            refEntities.add(TodoRefEntity.builder().parentTodoId(mockParam.getTodoId()).refTodoId(refTodo).build());
-        }
+		List<TodoRefEntity> refEntities = new ArrayList<>();
+		for (Long refTodo : mockParam.getRefTodos()) {
+			refEntities.add(TodoRefEntity.builder().parentTodoId(mockParam.getTodoId()).refTodoId(refTodo).build());
+		}
 
-        TodoEntity preDataEntity = TodoEntity.builder().content("집안일").statusCd(TodoStatusCd.NOT_YET.name()).todoRefs(refEntities).build();
-        TodoEntity inputDataEntity = TodoEntity.builder().todoId(mockParam.getTodoId()).content(mockParam.getContent()).statusCd(
-            mockParam.getStatusCd()).build();
+		//@formatter:off
+        TodoEntity preDataEntity = TodoEntity
+			.builder()
+				.content("집안일")
+				.statusCd(TodoStatusCd.NOT_YET.name())
+				.todoRefs(refEntities)
+			.build();
 
-        given(todoRepository.save(inputDataEntity)).willReturn(inputDataEntity);
-        given(todoRefRepository.save(refEntities)).willReturn(refEntities);
-        given(todoRepository.findOne(mockParam.getTodoId())).willReturn(preDataEntity);
+        TodoEntity inputDataEntity = TodoEntity
+			.builder()
+				.todoId(mockParam.getTodoId())
+				.content(mockParam.getContent())
+				.statusCd(mockParam.getStatusCd())
+			.build();
+        //@formatter:on
 
-        //@formatter:off
+		//given()
+
+		given(todoApiService.get(mockParam.getTodoId())).willReturn(preDataEntity);
+		given(todoApiService.isChkSelfRef(mockParam.getTodoId(), mockParam.getRefTodos())).willReturn(new ResData<>(true, "성공했습니다."));
+		given(todoApiService.modify(mockParam.getTodoId(), inputDataEntity.getContent(), inputDataEntity.getStatusCd(),
+			mockParam.getRefTodos())).willReturn(new ResData<>(true, "성공"));
+
+		//@formatter:off
         mvc.perform(
             //WHEN(Execution)
             put("/api/v1/todo/{id}", mockParam.getTodoId())
@@ -164,6 +186,6 @@ public class TodoApiControllerModifyTest {
             ;
         //@formatter:on
 
-    }
+	}
 
 }
