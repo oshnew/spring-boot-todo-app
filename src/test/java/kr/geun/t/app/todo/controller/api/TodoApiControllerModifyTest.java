@@ -9,6 +9,7 @@ import kr.geun.t.app.todo.repository.TodoRefRepository;
 import kr.geun.t.app.todo.repository.TodoRepository;
 import kr.geun.t.app.todo.service.TodoApiService;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,9 +119,11 @@ public class TodoApiControllerModifyTest {
 
     /**
      * 수정 성공 테스트
+     * TODO : 추가해야함.
      *
      * @throws Exception
      */
+    @Ignore
     @Test
     public void testSuccessModifyWithRef() throws Exception {
         //GIVEN(Preparation)
