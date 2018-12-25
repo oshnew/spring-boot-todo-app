@@ -80,6 +80,34 @@ public class TodoApiControllerModifyTest {
 
 	}
 
+
+	/**
+	 * 파라미터 에러 테스트
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testFailParameterErr_withNotFound() throws Exception {
+		//GIVEN(Preparation)
+		//@formatter:off
+		final Long mockTodoId = 1L;
+
+		given(todoApiService.get(mockTodoId)).willReturn(null);
+
+        mvc.perform(
+            //WHEN(Execution)
+            put("/api/v1/todo/{id}", mockTodoId)
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                )
+            //THEN(Verification)
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.msg").isNotEmpty())
+            ;
+        //@formatter:on
+
+	}
+
 	/**
 	 * 수정 성공 테스트
 	 *

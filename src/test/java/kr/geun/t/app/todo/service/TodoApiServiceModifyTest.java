@@ -39,33 +39,6 @@ public class TodoApiServiceModifyTest {
 	private TodoRepository mockTodoRepository;
 
 	/**
-	 * 수정 시 저장되어 있지 않은 할일 아이디를 보낼 경우 실패 테스트
-	 * - TODO : 컨트롤러로 해당 로직이동해야함.
-	 */
-	@Ignore
-	@Test
-	public void testFailPreModify() {
-		//GIVEN(Preparation)
-
-		//@formatter:off
-		TodoDTO.Modify mockParam = TodoDTO.Modify.builder()
-            .todoId(1L)
-			.content("테스트")
-			.statusCd(TodoStatusCd.NOT_YET.name())
-			.build();
-		//@formatter:on
-		given(mockTodoRepository.findOne(mockParam.getTodoId())).willReturn(null);
-
-		//WHEN(Execution)
-		ResponseEntity<ResData<TodoEntity>> result = todoApiService.preModify(mockParam);
-		ResData<TodoEntity> resultBody = result.getBody();
-
-		//THEN(Verification)
-		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
-		assertNull(resultBody.getData());
-	}
-
-	/**
 	 * 자기 자신을 참조 할 수 없는 기능 테스트
 	 */
 	@Test
@@ -129,35 +102,5 @@ public class TodoApiServiceModifyTest {
 		//THEN(Verification)
 		assertEquals(HttpStatus.OK, result.getStatusCode());
 		assertNull(todoEntity);
-	}
-
-	/**
-	 * 수정 성공 테스트
-	 *  - 새로 작성해야함.
-	 */
-	@Ignore
-	@Test
-	public void testSuccessModify() {
-//		//GIVEN(Preparation)
-//		TodoEntity mockTodoEntity = TodoEntity.builder().todoId(1L).content("변경 테스트").statusCd(TodoStatusCd.NOT_YET.name()).build();
-//		//@formatter:off
-//		TodoDTO.Modify mockParam = TodoDTO.Modify.builder()
-//            .todoId(mockTodoEntity.getTodoId())
-//			.content(mockTodoEntity.getContent())
-//			.statusCd(mockTodoEntity.getStatusCd())
-//			.build();
-//		//@formatter:on
-//
-//		given(mockTodoRepository.save(mockTodoEntity)).willReturn(mockTodoEntity);
-//
-//		//WHEN(Execution)
-//		ResponseEntity<ResData<TodoEntity>> result = todoApiService.modify(mockParam);
-//		ResData<TodoEntity> resultBody = result.getBody();
-//		TodoEntity todoEntity = resultBody.getData();
-//
-//		//THEN(Verification)
-//		assertEquals(HttpStatus.OK, result.getStatusCode());
-//		assertNull(todoEntity);
-
 	}
 }
