@@ -131,7 +131,7 @@ public class TodoApiControllerErrorTest {
             .build();
 		//@formatter:on
 
-		given(todoApiService.preModify(mockParam)).willThrow(new RuntimeException("mock exception"));
+		given(todoApiService.isChkSelfRef(mockParam.getTodoId(), mockParam.getRefTodos())).willThrow(new RuntimeException("mock exception"));
 
 		//@formatter:off
         mvc.perform(

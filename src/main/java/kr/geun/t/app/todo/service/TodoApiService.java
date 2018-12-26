@@ -42,15 +42,6 @@ public interface TodoApiService {
 	TodoEntity add(String content, Long[] refTodos);
 
 	/**
-	 * 수정
-	 *  - 전처리
-	 *
-	 * @param param
-	 * @return
-	 */
-	ResponseEntity<ResData<TodoEntity>> preModify(TodoDTO.Modify param);
-
-	/**
 	 * 본인 스스로를 참조하는지 체크
 	 *
 	 * @param todoId

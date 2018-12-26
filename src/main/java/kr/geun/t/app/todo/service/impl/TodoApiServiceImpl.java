@@ -85,33 +85,6 @@ public class TodoApiServiceImpl implements TodoApiService {
 	}
 
 	/**
-	 * 수정
-	 *  - 전처리
-	 *
-	 * @param param
-	 * @return
-	 */
-	@Override
-	public ResponseEntity<ResData<TodoEntity>> preModify(TodoDTO.Modify param) {
-		TodoEntity dbInfo = todoRepository.findOne(param.getTodoId());
-		if (dbInfo == null) {
-			return new ResponseEntity<>(new ResData<>("데이터를 찾을 수 없습니다."), HttpStatus.NOT_FOUND);
-		}
-
-		param.setStatusCd(dbInfo.getStatusCd());
-
-		if (param.getRefTodos() != null && param.getRefTodos().length > 0) { //참조걸린 할일들
-			List<Long> tt = Arrays.asList(param.getRefTodos());
-
-			if (tt.contains(dbInfo.getTodoId())) {
-				return new ResponseEntity<>(new ResData<>("자기 자신을 참조할 수 없습니다."), HttpStatus.BAD_REQUEST);
-			}
-		}
-
-		return new ResponseEntity<>(new ResData<>("성공했습니다."), HttpStatus.OK);
-	}
-
-	/**
 	 * 본인 스스로를 참조하는지 체크
 	 *
 	 * @param todoId
